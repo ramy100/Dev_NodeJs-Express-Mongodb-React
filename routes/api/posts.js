@@ -117,4 +117,69 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+//@route        Put api/Posts/like/:id
+//@desc         like a post by id
+//@access       private
+router.put('/like/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ msg: 'post not found' });
+    }
+    likes = post.likes.filter(like => like.user.toString() === req.user.id);
+    if (likes.length == 0) {
+      post.likes.unshift({ user: req.user.id });
+      await post.save();
+      return res.send(post);
+    }
+    res.status(400).json({ msg: 'cannot like post more than one time' });
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'invalid post id format' }); //if not a valid id
+    }
+    console.log(err.message);
+    res.status(500).json({ msg: 'server error' });
+  }
+});
+
+//@route        Put api/Posts/unlike/:id
+//@desc         unlike a post by id
+//@access       private
+router.put('/unlike/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ msg: 'post not found' });
+    }
+
+    //another way
+    // likes = post.likes.map(like => like.user);
+    // removeindex = likes.indexOf(req.user.id);
+    // if (likes.includes(req.user.id)) {
+    //   post.likes.splice(removeindex, 1);
+    //   await post.save();
+    //   return res.send(post);
+    // }
+
+    const likes = post.likes.filter(
+      like => like.user.toString() === req.user.id
+    );
+    if (likes.length > 0) {
+      removeindex = post.likes
+        .map(like => like.user.toString())
+        .indexOf(req.user.id);
+      post.likes.splice(removeindex, 1);
+      await post.save();
+      return res.send(post);
+    }
+    res.status(400).json({ msg: 'no likes for you here' });
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'invalid post id format' }); //if not a valid id
+    }
+    console.log(err.message);
+    res.status(500).json({ msg: 'server error' });
+  }
+});
+
 module.exports = router;
