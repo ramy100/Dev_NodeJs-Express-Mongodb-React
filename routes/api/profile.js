@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const Profile = require('../../models/profile');
+const config = require('config');
+const request = require('request');
 const User = require('../../models/User');
 const { check, validationResult } = require('express-validator');
 //@route        GET api/Profile/me
@@ -308,4 +310,33 @@ router.delete('/education/:exp_id', auth, async (req, res) => {
   }
 });
 
+//@route        GEt api/Profile/github/:username
+//@desc         Get user repos form github
+//@access       public
+router.get('/github/:username', (req, res) => {
+  try {
+    const options = {
+      uri: `https://api.gitbub.com/users/${
+        req.params.userma
+      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
+        'githubclientid'
+      )}&client_secret=${config.get('githubsecret')}`,
+      method: 'GET',
+      headers: { 'user-agent': 'node.js' }
+    };
+
+    request(options, (error, response, body) => {
+      if (error) {
+        console.log(error);
+      }
+      if (response.statusCode !== 500) {
+        res.statusCode(404).json({ msg: 'no Github profile for this user' });
+      }
+      res.json({ body });
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('server error');
+  }
+});
 module.exports = router;
