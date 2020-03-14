@@ -182,4 +182,76 @@ router.put('/unlike/:id', auth, async (req, res) => {
   }
 });
 
+//@route        Put api/Posts/comment/:id
+//@desc         add comment to a post by id
+//@access       private
+router.put(
+  '/comment/:id',
+  [
+    auth,
+    [
+      check('text', 'Text is required')
+        .not()
+        .isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
+      if (!post) {
+        return res.status(404).json({ msg: 'post not found' });
+      }
+      const user = await User.findById(req.user.id).select('-password');
+      newComment = {
+        user: req.user.id,
+        text: req.body.text,
+        name: user.name,
+        avatar: user.avatar
+      };
+      post.comments.unshift(newComment);
+      await post.save();
+      res.send(post);
+    } catch (err) {
+      if (err.kind === 'ObjectId') {
+        return res.status(404).json({ msg: 'invalid post id format' }); //if not a valid id
+      }
+      console.log(err.message);
+      res.status(500).json({ msg: 'server error' });
+    }
+  }
+);
+
+//@route        Delete api/Posts/comment/:id/:commentid
+//@desc         delete comment from a post by id
+//@access       private
+router.delete('/comment/:id/:commentid', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ msg: 'post not found' });
+    }
+    const comment = post.comments.find(
+      comment => comment.id === req.params.commentid
+    );
+    if (!comment) {
+      return res.status(404).json({ msg: 'comment not found' });
+    }
+    if (comment.user.toString() != req.user.id) {
+      return res.status(404).json({ msg: 'unauthorized delete' });
+    }
+    const removeindex = post.comments
+      .map(comment => comment._id)
+      .indexOf(req.params.commentid);
+    post.comments.splice(removeindex, 1);
+    await post.save();
+    res.send(post);
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'invalid post id format' }); //if not a valid id
+    }
+    console.log(err.message);
+    res.status(500).json({ msg: 'server error' });
+  }
+});
+
 module.exports = router;
