@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import axios from 'axios';
 
 const Register = () => {
   const [formData, setFormDate] = useState({
@@ -12,12 +13,28 @@ const Register = () => {
   const onChange = e => {
     setFormDate({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
   };
-  const onSubmit = e => {
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (password != password2) {
       console.log('password dont match');
     } else {
-      console.log(formData);
+      const newUser = { name, email, password };
+      try {
+        const config = {
+          Headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        const res = await axios.post(
+          'http://localhost:5000/api/users',
+          newUser,
+          config
+        );
+        console.log(res.data.token);
+      } catch (err) {
+        console.log(err.response.data.error);
+      }
     }
   };
   return (

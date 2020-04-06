@@ -15,8 +15,8 @@ router.post(
   '/',
   [
     check('name', 'name is required')
-      .not()
-      .isEmpty(),
+    .not()
+    .isEmpty(),
     check('email', 'Enter a valid email').isEmail(),
     check(
       'password',
@@ -36,9 +36,7 @@ router.post(
       let user = await User.findOne({ email });
 
       if (user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'user already exists' }] });
+        return res.status(400).json({ error: 'user already exists' });
       }
       //get users gravatar
       const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'mm' });
@@ -67,7 +65,7 @@ router.post(
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
-          res.json({ token });
+          res.status(200).json({ token });
         }
       );
     } catch (err) {
