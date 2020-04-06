@@ -12,14 +12,7 @@ const User = require('../../models/User');
 
 router.post(
   '/',
-  [
-    auth,
-    [
-      check('text', 'Text is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
+  [auth, [check('text', 'Text is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -33,7 +26,7 @@ router.post(
         text: req.body.text,
         name: user.name,
         avatar: user.avatar,
-        user: req.user.id
+        user: req.user.id,
       });
 
       const post = await newPost.save();
@@ -50,9 +43,7 @@ router.post(
 //@access       private
 router.get('/', auth, async (req, res) => {
   try {
-    const posts = await Post.find()
-      .sort({ date: -1 })
-      .select('-__v');
+    const posts = await Post.find().sort({ date: -1 }).select('-__v');
     res.send(posts);
   } catch (err) {
     console.log(err.messsage);
@@ -101,7 +92,7 @@ router.delete('/:id', auth, async (req, res) => {
   try {
     const post = await Post.findOneAndRemove({
       _id: req.params.id,
-      user: req.user.id
+      user: req.user.id,
     });
     if (!post) {
       //if a post not found or not my own post
@@ -126,7 +117,7 @@ router.put('/like/:id', auth, async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: 'post not found' });
     }
-    likes = post.likes.filter(like => like.user.toString() === req.user.id);
+    likes = post.likes.filter((like) => like.user.toString() === req.user.id);
     if (likes.length == 0) {
       post.likes.unshift({ user: req.user.id });
       await post.save();
@@ -162,11 +153,11 @@ router.put('/unlike/:id', auth, async (req, res) => {
     // }
 
     const likes = post.likes.filter(
-      like => like.user.toString() === req.user.id
+      (like) => like.user.toString() === req.user.id
     );
     if (likes.length > 0) {
       removeindex = post.likes
-        .map(like => like.user.toString())
+        .map((like) => like.user.toString())
         .indexOf(req.user.id);
       post.likes.splice(removeindex, 1);
       await post.save();
@@ -187,14 +178,7 @@ router.put('/unlike/:id', auth, async (req, res) => {
 //@access       private
 router.put(
   '/comment/:id',
-  [
-    auth,
-    [
-      check('text', 'Text is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
+  [auth, [check('text', 'Text is required').not().isEmpty()]],
   async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
@@ -206,7 +190,7 @@ router.put(
         user: req.user.id,
         text: req.body.text,
         name: user.name,
-        avatar: user.avatar
+        avatar: user.avatar,
       };
       post.comments.unshift(newComment);
       await post.save();
@@ -231,7 +215,7 @@ router.delete('/comment/:id/:commentid', auth, async (req, res) => {
       return res.status(404).json({ msg: 'post not found' });
     }
     const comment = post.comments.find(
-      comment => comment.id === req.params.commentid
+      (comment) => comment.id === req.params.commentid
     );
     if (!comment) {
       return res.status(404).json({ msg: 'comment not found' });
@@ -240,7 +224,7 @@ router.delete('/comment/:id/:commentid', auth, async (req, res) => {
       return res.status(404).json({ msg: 'unauthorized delete' });
     }
     const removeindex = post.comments
-      .map(comment => comment._id)
+      .map((comment) => comment._id)
       .indexOf(req.params.commentid);
     post.comments.splice(removeindex, 1);
     await post.save();

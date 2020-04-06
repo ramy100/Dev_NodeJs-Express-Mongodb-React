@@ -6,8 +6,8 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import './App.css';
 // Redux
-import {Provider} from 'react-redux'
-import store from './store'
+import { Provider } from 'react-redux';
+import store from './store';
 
 const App = () => (
   <Provider store={store}>

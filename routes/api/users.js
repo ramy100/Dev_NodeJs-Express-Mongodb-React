@@ -14,14 +14,12 @@ const jwt = require('jsonwebtoken');
 router.post(
   '/',
   [
-    check('name', 'name is required')
-    .not()
-    .isEmpty(),
+    check('name', 'name is required').not().isEmpty(),
     check('email', 'Enter a valid email').isEmail(),
     check(
       'password',
       'Enter a valid password with 6 or more characters'
-    ).isLength({ min: 6 })
+    ).isLength({ min: 6 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -44,7 +42,7 @@ router.post(
         name,
         email,
         avatar,
-        password
+        password,
       });
       //encrypt password
       //if we dont use await we will need to user .then() and .catch() to handle the promise
@@ -55,8 +53,8 @@ router.post(
       //reuturn jsonwebtoken
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(

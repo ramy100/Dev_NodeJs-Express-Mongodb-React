@@ -6,11 +6,11 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    password2: ''
+    password2: '',
   });
 
   const { name, email, password, password2 } = formData;
-  const onChange = e => {
+  const onChange = (e) => {
     setFormDate({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
   };
 
@@ -43,14 +43,14 @@ const Register = () => {
       <p className='lead'>
         <i className='fas fa-user'></i> Create Your Account
       </p>
-      <form className='form' onSubmit={e => onSubmit(e)}>
+      <form className='form' onSubmit={(e) => onSubmit(e)}>
         <div className='form-group'>
           <input
             type='text'
             placeholder='Name'
             name='name'
             value={name}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
             required
           />
         </div>
@@ -60,7 +60,7 @@ const Register = () => {
             placeholder='Email Address'
             name='email'
             value={email}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
             required
           />
           <small className='form-text'>
@@ -74,7 +74,7 @@ const Register = () => {
             placeholder='Password'
             name='password'
             value={password}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
             required
             minLength='6'
           />
@@ -85,7 +85,7 @@ const Register = () => {
             placeholder='Confirm Password'
             name='password2'
             value={password2}
-            onChange={e => onChange(e)}
+            onChange={(e) => onChange(e)}
             required
             minLength='6'
           />
