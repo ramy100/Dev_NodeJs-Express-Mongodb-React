@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
-const Alert = ({ alerts }) => {
+import React from "react";
+import { useSelector } from "react-redux";
+import { selectAlerts } from "../../store/slices/alert";
+const Alert = () => {
+  const alerts = useSelector(selectAlerts);
   return (
     alerts !== null &&
     alerts.length > 0 &&
@@ -14,11 +14,4 @@ const Alert = ({ alerts }) => {
   );
 };
 
-Alert.propTypes = {
-  alerts: PropTypes.array.isRequired,
-};
-const mapStateToProps = (state) => ({
-  alerts: state.alert,
-});
-
-export default connect(mapStateToProps)(Alert);
+export default Alert;

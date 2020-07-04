@@ -20,8 +20,11 @@
   },
   "homepage": "https://github.com/ramy1415/new-project#readme",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.1",
+    "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "express-validator": "^6.6.0",
     "gravatar": "^1.8.0",

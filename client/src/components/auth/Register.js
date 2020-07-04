@@ -1,110 +1,93 @@
-import React, { Fragment, useState } from 'react';
-import axios from 'axios';
+import React, { Fragment, useState } from "react";
+import { registerValidation } from "../../functions/auth-validation";
+import { registerUser } from "../../store/slices/auth";
 // Redux
-import { connect } from 'react-redux';
-import { setAlert } from '../../actions/alert';
-import PropTypes from 'prop-types';
-
-const Register = ({ setAlert }) => {
+import { useDispatch } from "react-redux";
+import { alertSet, alertsClear } from "../../store/slices/alert";
+// import store from '../../store/configurestore'
+const Register = () => {
   const [formData, setFormDate] = useState({
-    name: '',
-    email: '',
-    password: '',
-    password2: '',
+    name: "",
+    email: "",
+    password: "",
+    password2: "",
   });
-
+  const dispatch = useDispatch();
   const { name, email, password, password2 } = formData;
   const onChange = (e) => {
     setFormDate({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
   };
-
+  let errors = [];
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (password !== password2) {
-      setAlert('password dont match', 'danger');
+    errors = [];
+    dispatch(alertsClear());
+    registerValidation(errors, formData);
+    if (errors.length !== 0) {
+      errors.forEach((error) => {
+        dispatch(alertSet(error, "danger"));
+      });
     } else {
       const newUser = { name, email, password };
-      try {
-        const config = {
-          Headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-        const res = await axios.post(
-          'http://localhost:5000/api/users',
-          newUser,
-          config
-        );
-        console.log(res.data.token);
-      } catch (err) {
-        console.log(err.response.data.error);
-      }
+      dispatch(registerUser(newUser));
     }
   };
   return (
     <Fragment>
-      <h1 className='large text-primary'>Sign Up</h1>
-      <p className='lead'>
-        <i className='fas fa-user'></i> Create Your Account
+      <h1 className="large text-primary">Sign Up</h1>
+      <p className="lead">
+        <i className="fas fa-user"></i> Create Your Account
       </p>
-      <form className='form' onSubmit={(e) => onSubmit(e)}>
-        <div className='form-group'>
+      <form className="form" onSubmit={(e) => onSubmit(e)}>
+        <div className="form-group">
           <input
-            type='text'
-            placeholder='Name'
-            name='name'
+            type="text"
+            placeholder="Name"
+            name="name"
             value={name}
             onChange={(e) => onChange(e)}
-            required
           />
         </div>
-        <div className='form-group'>
+        <div className="form-group">
           <input
-            type='email'
-            placeholder='Email Address'
-            name='email'
+            type="text"
+            placeholder="Email Address"
+            name="email"
             value={email}
             onChange={(e) => onChange(e)}
-            required
           />
-          <small className='form-text'>
+          <small className="form-text">
             This site uses Gravatar so if you want a profile image, use a
             Gravatar email
           </small>
         </div>
-        <div className='form-group'>
+        <div className="form-group">
           <input
-            type='password'
-            placeholder='Password'
-            name='password'
+            type="password"
+            placeholder="Password"
+            name="password"
             value={password}
             onChange={(e) => onChange(e)}
-            required
-            minLength='6'
+            minLength="6"
           />
         </div>
-        <div className='form-group'>
+        <div className="form-group">
           <input
-            type='password'
-            placeholder='Confirm Password'
-            name='password2'
+            type="password"
+            placeholder="Confirm Password"
+            name="password2"
             value={password2}
             onChange={(e) => onChange(e)}
-            required
-            minLength='6'
+            minLength="6"
           />
         </div>
-        <input type='submit' className='btn btn-primary' value='Register' />
+        <input type="submit" className="btn btn-primary" value="Register" />
       </form>
-      <p className='my-1'>
-        Already have an account? <a href='login.html'>Sign In</a>
+      <p className="my-1">
+        Already have an account? <a href="login.html">Sign In</a>
       </p>
     </Fragment>
   );
 };
 
-Register.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-};
-
-export default connect(null, { setAlert })(Register);
+export default Register;
