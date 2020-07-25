@@ -6,7 +6,6 @@ const alertSlice = createSlice({
   initialState: [],
   reducers: {
     SET_ALERT: (state, action) => {
-      console.log(action);
       state.push(action.payload);
     },
     REMOVE_ALERT: (state, action) => {},

@@ -1,17 +1,20 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { registerValidation } from "../../functions/auth-validation";
-import { registerUser } from "../../store/slices/auth";
+
+import { register_user_begin, authuserSelector } from "../../store/slices/auth";
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { alertSet, alertsClear } from "../../store/slices/alert";
 // import store from '../../store/configurestore'
 const Register = () => {
-  const [formData, setFormDate] = useState({
+  const initialFormData = {
     name: "",
     email: "",
     password: "",
     password2: "",
-  });
+  };
+  const [formData, setFormDate] = useState(initialFormData);
+  const user = useSelector(authuserSelector);
   const dispatch = useDispatch();
   const { name, email, password, password2 } = formData;
   const onChange = (e) => {
@@ -29,9 +32,14 @@ const Register = () => {
       });
     } else {
       const newUser = { name, email, password };
-      dispatch(registerUser(newUser));
+      dispatch(register_user_begin(newUser));
     }
   };
+
+  useEffect(() => {
+    setFormDate(initialFormData);
+  }, [user]);
+
   return (
     <Fragment>
       <h1 className="large text-primary">Sign Up</h1>
