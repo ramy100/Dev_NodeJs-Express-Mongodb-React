@@ -71,7 +71,8 @@ function* registerBeginAsync(action) {
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
   } catch (err) {
-    yield put(AUTH_FAILED(err.response.data.errorMessages));
+    const errors = err.response ? err.response.data.errorMessages : {};
+    yield put(AUTH_FAILED(errors));
   }
 }
 
@@ -83,7 +84,8 @@ function* loginBeginAsync(action) {
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
   } catch (err) {
-    yield put(AUTH_FAILED(err.response.data.errorMessages));
+    const errors = err.response ? err.response.data.errorMessages : {};
+    yield put(AUTH_FAILED(errors));
     yield localStorage.removeItem("token");
   }
 }

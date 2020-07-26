@@ -20,7 +20,8 @@ const Login = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
     dispatch(login_user_begin(formData));
   };
 
@@ -67,12 +68,20 @@ const Login = () => {
             type="password"
             placeholder="Password"
             name="password"
+            error={
+              errors.password
+                ? {
+                    content: errors.password,
+                    pointing: "below",
+                  }
+                : false
+            }
             value={formData.password}
             onChange={handleChange}
           />
         </div>
         <input
-          type="button"
+          type="submit"
           className="btn btn-primary"
           value="Login"
           onClick={handleLogin}
