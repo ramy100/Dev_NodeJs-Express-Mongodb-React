@@ -1,39 +1,31 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { registerValidation } from "../../functions/auth-validation";
-
-import { register_user_begin, authuserSelector } from "../../store/slices/auth";
+import { Form } from "semantic-ui-react";
+import {
+  register_user_begin,
+  authuserSelector,
+  registerErrorsSelector,
+} from "../../store/slices/auth";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { alertSet, alertsClear } from "../../store/slices/alert";
-// import store from '../../store/configurestore'
 const Register = () => {
   const initialFormData = {
     name: "",
     email: "",
     password: "",
-    password2: "",
+    passwordConfirmation: "",
   };
   const [formData, setFormDate] = useState(initialFormData);
   const user = useSelector(authuserSelector);
+  const errors = useSelector(registerErrorsSelector);
   const dispatch = useDispatch();
-  const { name, email, password, password2 } = formData;
+  const { name, email, password, passwordConfirmation } = formData;
   const onChange = (e) => {
     setFormDate({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
   };
-  let errors = [];
   const onSubmit = async (e) => {
     e.preventDefault();
-    errors = [];
-    dispatch(alertsClear());
-    registerValidation(errors, formData);
-    if (errors.length !== 0) {
-      errors.forEach((error) => {
-        dispatch(alertSet(error, "danger"));
-      });
-    } else {
-      const newUser = { name, email, password };
-      dispatch(register_user_begin(newUser));
-    }
+    const newUser = { name, email, password, passwordConfirmation };
+    dispatch(register_user_begin(newUser));
   };
 
   useEffect(() => {
@@ -46,22 +38,38 @@ const Register = () => {
       <p className="lead">
         <i className="fas fa-user"></i> Create Your Account
       </p>
-      <form className="form" onSubmit={(e) => onSubmit(e)}>
+      <Form className="form" onSubmit={(e) => onSubmit(e)}>
         <div className="form-group">
-          <input
+          <Form.Input
             type="text"
             placeholder="Name"
             name="name"
+            error={
+              errors.name
+                ? {
+                    content: errors.name,
+                    pointing: "below",
+                  }
+                : false
+            }
             value={name}
             onChange={(e) => onChange(e)}
           />
         </div>
         <div className="form-group">
-          <input
+          <Form.Input
             type="text"
             placeholder="Email Address"
             name="email"
             value={email}
+            error={
+              errors.email
+                ? {
+                    content: errors.email,
+                    pointing: "below",
+                  }
+                : false
+            }
             onChange={(e) => onChange(e)}
           />
           <small className="form-text">
@@ -70,27 +78,43 @@ const Register = () => {
           </small>
         </div>
         <div className="form-group">
-          <input
+          <Form.Input
             type="password"
             placeholder="Password"
             name="password"
             value={password}
+            error={
+              errors.password
+                ? {
+                    content: errors.password,
+                    pointing: "below",
+                  }
+                : false
+            }
             onChange={(e) => onChange(e)}
             minLength="6"
           />
         </div>
         <div className="form-group">
-          <input
+          <Form.Input
             type="password"
             placeholder="Confirm Password"
-            name="password2"
-            value={password2}
+            name="passwordConfirmation"
+            value={passwordConfirmation}
+            error={
+              errors.passwordConfirmation
+                ? {
+                    content: errors.passwordConfirmation,
+                    pointing: "below",
+                  }
+                : false
+            }
             onChange={(e) => onChange(e)}
             minLength="6"
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Register" />
-      </form>
+      </Form>
       <p className="my-1">
         Already have an account? <a href="login.html">Sign In</a>
       </p>

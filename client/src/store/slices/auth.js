@@ -1,6 +1,7 @@
 import { createSlice, createAction } from "@reduxjs/toolkit";
 import { put, call, takeLeading } from "redux-saga/effects";
 import { requestRegisterUserApi } from "../api/api";
+import { alertSet } from "./alert";
 import swal from "sweetalert";
 
 const authSlice = createSlice({
@@ -10,7 +11,7 @@ const authSlice = createSlice({
     loading: false,
     token: localStorage.getItem("token"),
     user: null,
-    error: null,
+    RegisterErrors: {},
   },
   reducers: {
     REGISTER_SUCCESS: (state, action) => {
@@ -19,7 +20,7 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.isLogged = true;
       state.loading = false;
-      state.error = null;
+      state.RegisterErrors = {};
     },
     LOADING_REQUEST: (state, action) => {
       state.loading = true;
@@ -30,7 +31,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.isLogged = false;
       state.user = null;
-      state.error = action.payload.error;
+      state.RegisterErrors = action.payload;
     },
   },
 });
@@ -56,8 +57,7 @@ function* registerBeginAsync(action) {
       "success"
     );
   } catch (err) {
-    yield put(REGISTER_FAILED({ error: err.response.data.msg }));
-    yield swal("registration failed!", err.response.data.msg, "error");
+    yield put(REGISTER_FAILED(err.response.data.errorMessages));
   }
 }
 
@@ -70,3 +70,4 @@ export const register_user_begin = createAction("REGISTER_BEGIN_ASYNC");
 
 //auth selectors
 export const authuserSelector = (state) => state.auth.user;
+export const registerErrorsSelector = (state) => state.auth.RegisterErrors;

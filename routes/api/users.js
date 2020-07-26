@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, body } = require("express-validator");
 const config = require("config");
 const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
@@ -20,11 +20,21 @@ router.post(
       "password",
       "Enter a valid password with 6 or more characters"
     ).isLength({ min: 6 }),
+    body("passwordConfirmation").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Password confirmation does not match password");
+      }
+      return true;
+    }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ msg: errors.array() });
+      const errorMessages = errors.errors.reduce(
+        (acc, cur) => ({ ...acc, [cur.param]: cur.msg }),
+        {}
+      );
+      return res.status(400).json({ errorMessages });
     }
 
     const { name, email, password } = req.body;
@@ -34,7 +44,8 @@ router.post(
       let user = await User.findOne({ email });
 
       if (user) {
-        return res.status(400).json({ msg: "user already exists" });
+        const errorMessages = { email: "email already exists" };
+        return res.status(400).json({ errorMessages });
       }
       //get users gravatar
       const avatar = gravatar.url(email, { s: "200", r: "pg", d: "mm" });
