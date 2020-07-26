@@ -1,9 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Form } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import {
   register_user_begin,
   authuserSelector,
-  registerErrorsSelector,
+  authErrorsSelector,
+  clearAuthErrors,
+  authLoadingSelector,
 } from "../../store/slices/auth";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +19,8 @@ const Register = () => {
   };
   const [formData, setFormDate] = useState(initialFormData);
   const user = useSelector(authuserSelector);
-  const errors = useSelector(registerErrorsSelector);
+  const errors = useSelector(authErrorsSelector);
+  const loading = useSelector(authLoadingSelector);
   const dispatch = useDispatch();
   const { name, email, password, passwordConfirmation } = formData;
   const onChange = (e) => {
@@ -29,6 +33,14 @@ const Register = () => {
   };
 
   useEffect(() => {
+    return () => {
+      console.log("bye");
+      setFormDate(initialFormData);
+      dispatch(clearAuthErrors());
+    };
+  }, []);
+
+  useEffect(() => {
     setFormDate(initialFormData);
   }, [user]);
 
@@ -38,7 +50,7 @@ const Register = () => {
       <p className="lead">
         <i className="fas fa-user"></i> Create Your Account
       </p>
-      <Form className="form" onSubmit={(e) => onSubmit(e)}>
+      <Form loading={loading} className="form" onSubmit={(e) => onSubmit(e)}>
         <div className="form-group">
           <Form.Input
             type="text"
@@ -116,7 +128,7 @@ const Register = () => {
         <input type="submit" className="btn btn-primary" value="Register" />
       </Form>
       <p className="my-1">
-        Already have an account? <a href="login.html">Sign In</a>
+        Already have an account? <Link to="/login">Sign In</Link>
       </p>
     </Fragment>
   );
