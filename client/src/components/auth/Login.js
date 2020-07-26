@@ -7,11 +7,13 @@ import {
   authErrorsSelector,
   clearAuthErrors,
   authLoadingSelector,
+  authuserSelector,
 } from "../../store/slices/auth";
 
 const Login = () => {
   const initialFormData = { email: "", password: "" };
   const [formData, setFormData] = useState(initialFormData);
+  const user = useSelector(authuserSelector);
   const dispatch = useDispatch();
   const errors = useSelector(authErrorsSelector);
   const loading = useSelector(authLoadingSelector);
@@ -21,6 +23,11 @@ const Login = () => {
   const handleLogin = () => {
     dispatch(login_user_begin(formData));
   };
+
+  useEffect(() => {
+    setFormData(initialFormData);
+  }, [user]);
+
   useEffect(() => {
     return () => {
       dispatch(clearAuthErrors());
@@ -42,6 +49,7 @@ const Login = () => {
         <div className="form-group">
           <Form.Input
             placeholder="Email Address"
+            value={formData.email}
             error={
               errors.email
                 ? {
@@ -59,6 +67,7 @@ const Login = () => {
             type="password"
             placeholder="Password"
             name="password"
+            value={formData.password}
             onChange={handleChange}
           />
         </div>

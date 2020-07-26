@@ -17,14 +17,14 @@ const Register = () => {
     password: "",
     passwordConfirmation: "",
   };
-  const [formData, setFormDate] = useState(initialFormData);
+  const [formData, setFormData] = useState(initialFormData);
   const user = useSelector(authuserSelector);
   const errors = useSelector(authErrorsSelector);
   const loading = useSelector(authLoadingSelector);
   const dispatch = useDispatch();
   const { name, email, password, passwordConfirmation } = formData;
   const onChange = (e) => {
-    setFormDate({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
+    setFormData({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
   };
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -34,14 +34,13 @@ const Register = () => {
 
   useEffect(() => {
     return () => {
-      console.log("bye");
-      setFormDate(initialFormData);
+      setFormData(initialFormData);
       dispatch(clearAuthErrors());
     };
   }, []);
 
   useEffect(() => {
-    setFormDate(initialFormData);
+    setFormData(initialFormData);
   }, [user]);
 
   return (
@@ -104,7 +103,6 @@ const Register = () => {
                 : false
             }
             onChange={(e) => onChange(e)}
-            minLength="6"
           />
         </div>
         <div className="form-group">
@@ -122,7 +120,6 @@ const Register = () => {
                 : false
             }
             onChange={(e) => onChange(e)}
-            minLength="6"
           />
         </div>
         <input type="submit" className="btn btn-primary" value="Register" />

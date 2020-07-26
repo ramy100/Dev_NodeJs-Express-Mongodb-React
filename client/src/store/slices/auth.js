@@ -5,17 +5,18 @@ import {
   requestLoginUserApi,
   requestGetUserApi,
 } from "../api/api";
-import swal from "sweetalert";
-
+// import Swal from "sweetalert2";
+const initialState = {
+  isLogged: false,
+  loading: false,
+  token: localStorage.getItem("token"),
+  user: null,
+  AuthErrors: {},
+  authToastMessage: { title: "", icon: "" },
+};
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    isLogged: false,
-    loading: false,
-    token: localStorage.getItem("token"),
-    user: null,
-    AuthErrors: {},
-  },
+  initialState,
   reducers: {
     LOGIN_USER: (state, action) => {
       localStorage.setItem("token", action.payload.token);
@@ -24,18 +25,28 @@ const authSlice = createSlice({
       state.isLogged = true;
       state.loading = false;
       state.AuthErrors = {};
+      state.authToastMessage = {
+        title: `welcome ${action.payload.user.name}!`,
+        icon: "success",
+      };
     },
     AUTH_LOADING: (state, action) => {
       state.loading = true;
     },
     AUTH_FAILED: (state, action) => {
-      localStorage.removeItem("token");
       state.token = null;
       state.loading = false;
       state.isLogged = false;
       state.user = null;
       state.AuthErrors = action.payload;
     },
+    LOGOUT_USER: (state, action) => ({
+      ...initialState,
+      authToastMessage: {
+        title: `Logged Out!`,
+        icon: "info",
+      },
+    }),
     CLEAR_REGISTER_ERRORS: (state, action) => {
       state.AuthErrors = {};
     },
@@ -47,6 +58,7 @@ const {
   LOGIN_USER,
   AUTH_LOADING,
   AUTH_FAILED,
+  LOGOUT_USER,
   CLEAR_REGISTER_ERRORS,
 } = authSlice.actions;
 
@@ -58,11 +70,6 @@ function* registerBeginAsync(action) {
     const token = yield res.data.token;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
-    yield swal(
-      "Regiteration Success!",
-      `Welcome ${user.name} \n you are now logged in!`,
-      "success"
-    );
   } catch (err) {
     yield put(AUTH_FAILED(err.response.data.errorMessages));
   }
@@ -75,13 +82,28 @@ function* loginBeginAsync(action) {
     const token = yield res.data.token;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
-    yield swal(
-      "Login Success!",
-      `Welcome ${user.name} \n you are now logged in!`,
-      "success"
-    );
   } catch (err) {
     yield put(AUTH_FAILED(err.response.data.errorMessages));
+    yield localStorage.removeItem("token");
+  }
+}
+
+function* logoutBeginAsync(action) {
+  yield put(AUTH_LOADING());
+  yield put(LOGOUT_USER());
+  yield localStorage.removeItem("token");
+}
+
+function* loadUserAsync(action) {
+  yield put(AUTH_LOADING());
+  try {
+    const token = yield action.payload;
+    const { data: user } = yield call(requestGetUserApi, token);
+    console.log(user);
+    yield put(LOGIN_USER({ token, user }));
+  } catch (err) {
+    // yield put(AUTH_FAILED(err.response.data.errorMessages));
+    console.log(err.response);
   }
 }
 
@@ -89,17 +111,24 @@ export function* watchAuthAsync() {
   yield all([
     takeLeading(register_user_begin.type, registerBeginAsync),
     takeLeading(login_user_begin.type, loginBeginAsync),
+    takeLeading(logout_user_begin.type, logoutBeginAsync),
+    takeLeading(load_user_from_local_storage.type, loadUserAsync),
   ]);
 }
 
 // auth actions
 export const register_user_begin = createAction("auth/REGISTER_BEGIN_ASYNC");
 export const login_user_begin = createAction("auth/LOGIN_BEGIN_ASYNC");
+export const logout_user_begin = createAction("auth/LOGOUT_BEGIN_ASYNC");
+export const load_user_from_local_storage = createAction(
+  "auth/LOAD_USER_FROM_LOCAL_STORAGE"
+);
 
 //auth selectors
 export const authuserSelector = (state) => state.auth.user;
 export const authErrorsSelector = (state) => state.auth.AuthErrors;
 export const authLoadingSelector = (state) => state.auth.loading;
+export const authToastSelector = (state) => state.auth.authToastMessage;
 
 //action export
 export const clearAuthErrors = CLEAR_REGISTER_ERRORS;
