@@ -50,6 +50,12 @@ const authSlice = createSlice({
     CLEAR_REGISTER_ERRORS: (state, action) => {
       state.AuthErrors = {};
     },
+    SEND_AUTH_MESSAGE: (state, { payload: { title, icon } }) => {
+      state.authToastMessage = {
+        title,
+        icon,
+      };
+    },
   },
 });
 
@@ -60,6 +66,7 @@ const {
   AUTH_FAILED,
   LOGOUT_USER,
   CLEAR_REGISTER_ERRORS,
+  SEND_AUTH_MESSAGE,
 } = authSlice.actions;
 
 // auth sagas
@@ -134,3 +141,4 @@ export const authToastSelector = (state) => state.auth.authToastMessage;
 
 //action export
 export const clearAuthErrors = CLEAR_REGISTER_ERRORS;
+export const sendAuthMessage = SEND_AUTH_MESSAGE;

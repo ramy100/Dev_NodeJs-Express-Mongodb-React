@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Swal from "sweetalert2";
 
 const useToast = ({
@@ -8,7 +7,7 @@ const useToast = ({
   timerProgressBar = true,
   showConfirmButton = false,
 }) => {
-  const [toastConfig, setToastConfig] = useState({
+  const toastConfig = {
     toast,
     position,
     showConfirmButton,
@@ -18,7 +17,7 @@ const useToast = ({
       toast.addEventListener("mouseenter", Swal.stopTimer);
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
-  });
+  };
 
   const Toast = Swal.mixin(toastConfig);
 

@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Form, Message } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,18 +8,23 @@ import {
   clearAuthErrors,
   authLoadingSelector,
   authuserSelector,
+  sendAuthMessage,
 } from "../../store/slices/auth";
 
 const Login = () => {
   const initialFormData = { email: "", password: "" };
   const [formData, setFormData] = useState(initialFormData);
+
   const user = useSelector(authuserSelector);
   const dispatch = useDispatch();
+  const { state } = useLocation();
   const errors = useSelector(authErrorsSelector);
   const loading = useSelector(authLoadingSelector);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(login_user_begin(formData));
@@ -30,10 +35,14 @@ const Login = () => {
   }, [user]);
 
   useEffect(() => {
+    if (state) {
+      dispatch(sendAuthMessage(state.redirectMessage));
+    }
     return () => {
       dispatch(clearAuthErrors());
     };
   }, []);
+
   return (
     <Fragment>
       <h1 className="large text-primary">Sign In</h1>

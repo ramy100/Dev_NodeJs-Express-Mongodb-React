@@ -1,39 +1,17 @@
-import React, { useEffect, Fragment } from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  load_user_from_local_storage,
-  authToastSelector,
-  authuserSelector,
-  logout_user_begin,
-} from "../../store/slices/auth";
-import useToast from "../../Hooks/toast.hook";
+import { Icon } from "semantic-ui-react";
+import { authuserSelector, logout_user_begin } from "../../store/slices/auth";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const authToast = useSelector(authToastSelector);
-  const { icon, title } = authToast;
   const user = useSelector(authuserSelector);
-  const Toast = useToast({});
-  useEffect(() => {
-    const token = localStorage.token;
-    if (token) {
-      dispatch(load_user_from_local_storage(token));
-    }
-  }, []);
 
-  useEffect(() => {
-    if (title && icon) {
-      Toast.fire({
-        icon,
-        title,
-      });
-    }
-  }, [authToast]);
-
-  const handleLogout = (e) => {
+  const handleLogout = () => {
     dispatch(logout_user_begin());
   };
+
   return (
     <div>
       <nav className="navbar bg-dark">
@@ -44,13 +22,14 @@ const Navbar = () => {
         </h1>
         <ul>
           <li>
-            <a href="!#">Developers</a>
+            <Link to="/dashboard">DashBoard</Link>
           </li>
           {user ? (
             <li>
-              <a style={{ cursor: "pointer" }} onClick={handleLogout}>
+              <div className="logoutButton" onClick={handleLogout}>
+                <Icon name="log out" />
                 Logout
-              </a>
+              </div>
             </li>
           ) : (
             <Fragment>
@@ -58,7 +37,9 @@ const Navbar = () => {
                 <Link to="/register">Register</Link>
               </li>
               <li>
-                <Link to="/login">Login</Link>
+                <Link to="/login">
+                  <Icon name="user" /> Login
+                </Link>
               </li>
             </Fragment>
           )}
@@ -67,4 +48,5 @@ const Navbar = () => {
     </div>
   );
 };
+
 export default Navbar;
