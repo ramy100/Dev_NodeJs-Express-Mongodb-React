@@ -108,7 +108,6 @@ function* loadUserAsync(action) {
   try {
     const token = yield action.payload;
     const { data: user } = yield call(requestGetUserApi, token);
-    console.log(user);
     yield put(LOGIN_USER({ token, user }));
   } catch (err) {
     // yield put(AUTH_FAILED(err.response.data.errorMessages));
@@ -135,6 +134,7 @@ export const load_user_from_local_storage = createAction(
 
 //auth selectors
 export const authuserSelector = (state) => state.auth.user;
+export const authTokenSelector = (state) => state.auth.token;
 export const authErrorsSelector = (state) => state.auth.AuthErrors;
 export const authLoadingSelector = (state) => state.auth.loading;
 export const authToastSelector = (state) => state.auth.authToastMessage;

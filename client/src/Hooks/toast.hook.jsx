@@ -6,7 +6,7 @@ const useToast = ({
   timer = 3000,
   timerProgressBar = true,
   showConfirmButton = false,
-}) => {
+} = {}) => {
   const toastConfig = {
     toast,
     position,

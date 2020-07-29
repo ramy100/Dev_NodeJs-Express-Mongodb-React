@@ -34,3 +34,14 @@ export const requestGetUserApi = (token) => {
     },
   });
 };
+
+export const requestGetUserProfile = (token) => {
+  return Axios.request({
+    url: "/me",
+    baseURL: "http://localhost:5000/api/profile",
+    method: "get",
+    headers: {
+      "x-auth-token": token,
+    },
+  });
+};
