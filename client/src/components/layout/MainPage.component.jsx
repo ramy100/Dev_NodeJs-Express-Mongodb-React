@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Navbar from "./Navbar";
-import Landing from "./Landing";
-import Alert from "./Alert";
-import Login from "../auth/Login";
-import Register from "../auth/Register";
+import Navbar from "./Navbar.component";
+import Landing from "./Landing.component";
+import Alert from "./Alert.component";
+import Login from "../auth/Login.component";
+import Register from "../auth/Register.component";
 import GuestRoutes from "../routes/GuestRoutes.component";
 import ProtectedRoute from "../routes/ProtectedRoutes.component";
 import DashBoard from "../dashboard/dashboard.component";
@@ -20,6 +20,7 @@ const MainPage = () => {
   const authToast = useSelector(authToastSelector);
   const { icon, title } = authToast;
   const Toast = useToast({ position: "top" });
+
   useEffect(() => {
     const token = localStorage.token;
     if (token) {

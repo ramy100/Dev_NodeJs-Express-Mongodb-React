@@ -10,10 +10,10 @@ import {
   authuserSelector,
   sendAuthMessage,
 } from "../../store/slices/auth";
+import FormInput from "../utils/FormInput/FormInput.component";
 
 const Login = () => {
-  const initialFormData = { email: "", password: "" };
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState({});
 
   const user = useSelector(authuserSelector);
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    setFormData(initialFormData);
+    setFormData({});
   }, [user]);
 
   useEffect(() => {
@@ -57,36 +57,19 @@ const Login = () => {
       ) : null}
       <Form loading={loading} className="form">
         <div className="form-group">
-          <Form.Input
-            placeholder="Email Address"
-            value={formData.email}
-            error={
-              errors.email
-                ? {
-                    content: errors.email,
-                    pointing: "below",
-                  }
-                : false
-            }
-            name="email"
-            onChange={handleChange}
+          <FormInput
+            type="text"
+            valueName="email"
+            errorsArray={errors}
+            onChanleHandler={handleChange}
           />
         </div>
         <div className="form-group">
-          <Form.Input
+          <FormInput
             type="password"
-            placeholder="Password"
-            name="password"
-            error={
-              errors.password
-                ? {
-                    content: errors.password,
-                    pointing: "below",
-                  }
-                : false
-            }
-            value={formData.password}
-            onChange={handleChange}
+            valueName="password"
+            errorsArray={errors}
+            onChanleHandler={handleChange}
           />
         </div>
         <input
