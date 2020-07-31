@@ -4,11 +4,14 @@ import "./App.css";
 // Redux
 import { Provider } from "react-redux";
 import store from "./store/configurestore";
+import { MediaContextProvider } from "./media";
 
 const App = () => (
-  <Provider store={store}>
-    <MainPage />
-  </Provider>
+  <MediaContextProvider>
+    <Provider store={store}>
+      <MainPage />
+    </Provider>
+  </MediaContextProvider>
 );
 
 export default App;

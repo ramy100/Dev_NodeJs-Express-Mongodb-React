@@ -1,6 +1,12 @@
 import React from "react";
 import { Form } from "semantic-ui-react";
-const FormInput = ({ valueName, errorsArray, onChanleHandler, type }) => {
+const FormInput = ({
+  valueName,
+  errorsArray,
+  onChanleHandler,
+  type,
+  ...otherProps
+}) => {
   const getPlaceholder = (s) => {
     if (typeof s !== "string") return "";
     let i = 0;
@@ -31,6 +37,7 @@ const FormInput = ({ valueName, errorsArray, onChanleHandler, type }) => {
       }
       name={valueName}
       onChange={(e) => onChanleHandler(e)}
+      {...otherProps}
     />
   );
 };

@@ -1,10 +1,8 @@
 import React, { Fragment, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Navbar from "./Navbar.component";
 import Landing from "./Landing.component";
-import Alert from "./Alert.component";
-import Login from "../auth/Login.component";
-import Register from "../auth/Register.component";
+import Login from "../auth/Login/Login.component";
+import Register from "../auth/register/register.component";
 import GuestRoutes from "../routes/GuestRoutes.component";
 import ProtectedRoute from "../routes/ProtectedRoutes.component";
 import DashBoard from "../dashboard/dashboard.component";
@@ -14,6 +12,11 @@ import {
   load_user_from_local_storage,
 } from "../../store/slices/auth";
 import useToast from "../../Hooks/toast.hook";
+import { Media } from "../../media";
+import DesktopNavBar from "../NavBar/DesktopNavBar.component";
+import MobileNavBar from "../NavBar/MobileNavBar.component";
+import { Sidebar, Segment } from "semantic-ui-react";
+import Footer from "../Footer/Footer.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -38,20 +41,38 @@ const MainPage = () => {
   }, [authToast]);
 
   return (
-    <Router>
-      <Fragment>
-        <Navbar />
-        <Route exact path="/" component={Landing} />
-        <section className="container">
-          <Alert />
-          <Switch>
-            <GuestRoutes exact path="/Login" component={Login} />
-            <GuestRoutes exact path="/register" component={Register} />
-            <ProtectedRoute exact path="/dashboard" component={DashBoard} />
-          </Switch>
-        </section>
-      </Fragment>
-    </Router>
+    <Fragment>
+      <Router>
+        <Segment inverted textAlign="center" vertical>
+          <Media greaterThanOrEqual="tablet">
+            <DesktopNavBar />
+          </Media>
+          <Media as={Sidebar.Pushable} at="mobile">
+            <MobileNavBar />
+          </Media>
+        </Segment>
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <Fragment>
+                <Media greaterThanOrEqual="tablet">
+                  <Landing />
+                </Media>
+                <Media at="mobile">
+                  <Landing mobile />
+                </Media>
+              </Fragment>
+            )}
+          />
+          <GuestRoutes exact path="/Login" component={Login} />
+          <GuestRoutes exact path="/register" component={Register} />
+          <ProtectedRoute exact path="/dashboard" component={DashBoard} />
+        </Switch>
+        <Footer />
+      </Router>
+    </Fragment>
   );
 };
 

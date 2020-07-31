@@ -1,7 +1,6 @@
-import { createSlice, createAction, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createAction } from "@reduxjs/toolkit";
 import { takeLeading, all, put } from "redux-saga/effects";
 import { requestGetUserProfile } from "../api/api";
-import { STATES } from "mongoose";
 
 const initialState = {
   profile: null,
