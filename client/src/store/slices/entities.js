@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import alerts from "./alert";
+import popUp from "./popUps";
 export default combineReducers({
-  alerts,
+  popUp,
 });

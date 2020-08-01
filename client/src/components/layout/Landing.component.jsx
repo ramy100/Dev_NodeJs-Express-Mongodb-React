@@ -12,7 +12,6 @@ import {
 import { useSelector } from "react-redux";
 import { authuserSelector } from "../../store/slices/auth";
 import { Link } from "react-router-dom";
-import Footer from "../Footer/Footer.component";
 
 const Landing = ({ mobile }) => {
   const user = useSelector(authuserSelector);

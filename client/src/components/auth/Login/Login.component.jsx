@@ -13,11 +13,11 @@ import {
   authErrorsSelector,
   authLoadingSelector,
   login_user_begin,
-  sendAuthMessage,
   clearAuthErrors,
 } from "../../../store/slices/auth";
 import { useLocation, Link } from "react-router-dom";
 import FormInput from "../../utils/FormInput/FormInput.component";
+import { showErrorPopup } from "../../../store/slices/popUps";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({});
@@ -43,7 +43,8 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (state) {
-      dispatch(sendAuthMessage(state.redirectMessage));
+      console.log(state.redirectMessage);
+      dispatch(showErrorPopup(state.redirectMessage));
     }
     return () => {
       dispatch(clearAuthErrors());

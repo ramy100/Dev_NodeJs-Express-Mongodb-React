@@ -1,13 +1,13 @@
 import { createSlice, createAction } from "@reduxjs/toolkit";
 import { takeLeading, all, put } from "redux-saga/effects";
 import { requestGetUserProfile } from "../api/api";
+import { showErrorPopup } from "./popUps";
 
 const initialState = {
   profile: null,
   profiles: [],
   repos: [],
   loading: false,
-  message: { icon: "", title: "" },
 };
 
 const profileSlice = createSlice({
@@ -17,13 +17,7 @@ const profileSlice = createSlice({
     LOADING_PROFILE: (state, action) => {
       state.loading = true;
     },
-    SAVE_PROFILE: (state, action) => {
-      console.log(action.payload);
-      state.loading = false;
-    },
-    SEND_PROFILE_MESSAGE: (state, { payload: { title, icon } }) => {
-      state.message.title = title;
-      state.message.icon = icon;
+    LOAD_PROFILE_SUCCESS: (state, action) => {
       state.loading = false;
     },
   },
@@ -31,11 +25,7 @@ const profileSlice = createSlice({
 
 export default profileSlice.reducer;
 
-const {
-  SAVE_PROFILE,
-  SEND_PROFILE_MESSAGE,
-  LOADING_PROFILE,
-} = profileSlice.actions;
+const { LOAD_PROFILE_SUCCESS, LOADING_PROFILE } = profileSlice.actions;
 
 // profile sagas
 function* getUserProfile(action) {
@@ -43,10 +33,10 @@ function* getUserProfile(action) {
     yield put(LOADING_PROFILE());
     const res = yield requestGetUserProfile(action.payload);
     const userProfile = yield res.profile;
-    yield put(SAVE_PROFILE(userProfile));
+    yield put(LOAD_PROFILE_SUCCESS(userProfile));
   } catch (error) {
     const { msg } = error.response.data;
-    yield put(SEND_PROFILE_MESSAGE({ title: msg, icon: "error" }));
+    yield put(showErrorPopup(msg));
   }
 }
 

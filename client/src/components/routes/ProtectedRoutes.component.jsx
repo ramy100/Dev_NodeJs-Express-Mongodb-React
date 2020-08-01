@@ -14,10 +14,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
             to={{
               pathname: "/login",
               state: {
-                redirectMessage: {
-                  icon: "error",
-                  title: "You are not logged in!",
-                },
+                redirectMessage: "You are not logged in!",
               },
             }}
           />

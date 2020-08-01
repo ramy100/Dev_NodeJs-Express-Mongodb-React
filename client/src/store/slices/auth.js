@@ -5,14 +5,14 @@ import {
   requestLoginUserApi,
   requestGetUserApi,
 } from "../api/api";
-// import Swal from "sweetalert2";
+import { showLoginSuccessPopup, showLogoutPopup } from "./popUps";
+
 const initialState = {
   isLogged: false,
   loading: false,
   token: localStorage.getItem("token"),
   user: null,
   AuthErrors: {},
-  authToastMessage: { title: "", icon: "" },
 };
 const authSlice = createSlice({
   name: "auth",
@@ -25,10 +25,6 @@ const authSlice = createSlice({
       state.isLogged = true;
       state.loading = false;
       state.AuthErrors = {};
-      state.authToastMessage = {
-        title: `welcome ${action.payload.user.name}!`,
-        icon: "success",
-      };
     },
     AUTH_LOADING: (state, action) => {
       state.loading = true;
@@ -40,21 +36,9 @@ const authSlice = createSlice({
       state.user = null;
       state.AuthErrors = action.payload;
     },
-    LOGOUT_USER: (state, action) => ({
-      ...initialState,
-      authToastMessage: {
-        title: `Logged Out!`,
-        icon: "info",
-      },
-    }),
+    LOGOUT_USER: (state, action) => initialState,
     CLEAR_REGISTER_ERRORS: (state, action) => {
       state.AuthErrors = {};
-    },
-    SEND_AUTH_MESSAGE: (state, { payload: { title, icon } }) => {
-      state.authToastMessage = {
-        title,
-        icon,
-      };
     },
   },
 });
@@ -66,7 +50,6 @@ const {
   AUTH_FAILED,
   LOGOUT_USER,
   CLEAR_REGISTER_ERRORS,
-  SEND_AUTH_MESSAGE,
 } = authSlice.actions;
 
 // auth sagas
@@ -77,6 +60,7 @@ function* registerBeginAsync(action) {
     const token = yield res.data.token;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
+    yield put(showLoginSuccessPopup(user.name));
   } catch (err) {
     const errors = err.response ? err.response.data.errorMessages : {};
     yield put(AUTH_FAILED(errors));
@@ -90,6 +74,7 @@ function* loginBeginAsync(action) {
     const token = yield res.data.token;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
+    yield put(showLoginSuccessPopup(user.name));
   } catch (err) {
     const errors = err.response ? err.response.data.errorMessages : {};
     yield put(AUTH_FAILED(errors));
@@ -100,6 +85,7 @@ function* loginBeginAsync(action) {
 function* logoutBeginAsync(action) {
   yield put(AUTH_LOADING());
   yield put(LOGOUT_USER());
+  yield put(showLogoutPopup());
   yield localStorage.removeItem("token");
 }
 
@@ -109,9 +95,9 @@ function* loadUserAsync(action) {
     const token = yield action.payload;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
+    yield put(showLoginSuccessPopup(user.name));
   } catch (err) {
-    // yield put(AUTH_FAILED(err.response.data.errorMessages));
-    console.log(err.response);
+    yield console.log(err.response);
   }
 }
 
@@ -137,8 +123,6 @@ export const authuserSelector = (state) => state.auth.user;
 export const authTokenSelector = (state) => state.auth.token;
 export const authErrorsSelector = (state) => state.auth.AuthErrors;
 export const authLoadingSelector = (state) => state.auth.loading;
-export const authToastSelector = (state) => state.auth.authToastMessage;
 
 //action export
 export const clearAuthErrors = CLEAR_REGISTER_ERRORS;
-export const sendAuthMessage = SEND_AUTH_MESSAGE;

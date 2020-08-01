@@ -7,22 +7,20 @@ import GuestRoutes from "../routes/GuestRoutes.component";
 import ProtectedRoute from "../routes/ProtectedRoutes.component";
 import DashBoard from "../dashboard/dashboard.component";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  authToastSelector,
-  load_user_from_local_storage,
-} from "../../store/slices/auth";
-import useToast from "../../Hooks/toast.hook";
+import { load_user_from_local_storage } from "../../store/slices/auth";
+import usePopUp from "../../Hooks/PopUp.hook";
 import { Media } from "../../media";
 import DesktopNavBar from "../NavBar/DesktopNavBar.component";
 import MobileNavBar from "../NavBar/MobileNavBar.component";
 import { Sidebar, Segment } from "semantic-ui-react";
 import Footer from "../Footer/Footer.component";
+import { popUpSelector } from "../../store/slices/popUps";
 
 const MainPage = () => {
   const dispatch = useDispatch();
-  const authToast = useSelector(authToastSelector);
-  const { icon, title } = authToast;
-  const Toast = useToast({ position: "top" });
+  const popUp = useSelector(popUpSelector);
+  const { icon, title } = popUp;
+  const Toast = usePopUp({ toast: true });
 
   useEffect(() => {
     const token = localStorage.token;
@@ -38,7 +36,7 @@ const MainPage = () => {
         title,
       });
     }
-  }, [authToast]);
+  }, [popUp]);
 
   return (
     <Fragment>

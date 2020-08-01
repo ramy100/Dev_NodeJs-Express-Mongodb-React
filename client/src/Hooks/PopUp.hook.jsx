@@ -1,13 +1,13 @@
 import Swal from "sweetalert2";
 
-const useToast = ({
-  toast = true,
+const usePopUp = ({
+  toast = false,
   position = "center",
   timer = 3000,
   timerProgressBar = true,
   showConfirmButton = false,
 } = {}) => {
-  const toastConfig = {
+  const popUpConfig = {
     toast,
     position,
     showConfirmButton,
@@ -19,9 +19,9 @@ const useToast = ({
     },
   };
 
-  const Toast = Swal.mixin(toastConfig);
+  const PopUp = Swal.mixin(popUpConfig);
 
-  return Toast;
+  return PopUp;
 };
 
-export default useToast;
+export default usePopUp;
