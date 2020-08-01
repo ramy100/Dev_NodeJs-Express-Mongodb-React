@@ -15,6 +15,7 @@ import MobileNavBar from "../NavBar/MobileNavBar.component";
 import { Sidebar, Segment } from "semantic-ui-react";
 import Footer from "../Footer/Footer.component";
 import { popUpSelector } from "../../store/slices/popUps";
+import CreateOrUpdataProfile from "../Profile/CreateOrUpdate/CreateOrUpdataProfile.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -67,6 +68,11 @@ const MainPage = () => {
           <GuestRoutes exact path="/Login" component={Login} />
           <GuestRoutes exact path="/register" component={Register} />
           <ProtectedRoute exact path="/dashboard" component={DashBoard} />
+          <ProtectedRoute
+            exact
+            path="/create/profile"
+            component={CreateOrUpdataProfile}
+          />
         </Switch>
         <Footer />
       </Router>

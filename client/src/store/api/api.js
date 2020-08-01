@@ -45,3 +45,88 @@ export const requestGetUserProfile = (token) => {
     },
   });
 };
+
+export const requestGetUserProfileById = (token, userId) => {
+  return Axios.request({
+    url: `/user/${userId}`,
+    baseURL: "http://localhost:5000/api/profile",
+    method: "get",
+  });
+};
+
+export const requestGetAllUsersProfile = () => {
+  return Axios.request({
+    url: "/profile",
+    baseURL: "http://localhost:5000/api",
+    method: "get",
+  });
+};
+
+export const requestCreateOrUpdateUserProfile = (token, data) => {
+  return Axios.request({
+    url: "/profile",
+    baseURL: "http://localhost:5000/api",
+    method: "post",
+    headers: {
+      "x-auth-token": token,
+    },
+    data,
+  });
+};
+
+export const requestDeleteUserProfile = (token) => {
+  return Axios.request({
+    url: "/profile",
+    baseURL: "http://localhost:5000/api",
+    method: "delete",
+    headers: {
+      "x-auth-token": token,
+    },
+  });
+};
+
+export const requestPutUserProfileExperience = (token, data) => {
+  return Axios.request({
+    url: "/experience",
+    baseURL: "http://localhost:5000/api/profile",
+    method: "put",
+    headers: {
+      "x-auth-token": token,
+    },
+    data,
+  });
+};
+
+export const requestPutUserProfileEducation = (token, data) => {
+  return Axios.request({
+    url: "/education",
+    baseURL: "http://localhost:5000/api/profile",
+    method: "put",
+    headers: {
+      "x-auth-token": token,
+    },
+    data,
+  });
+};
+
+export const requestDeleteUserProfileExperience = (token, expId) => {
+  return Axios.request({
+    url: `/experience/${expId}`,
+    baseURL: "http://localhost:5000/api/profile",
+    method: "delete",
+    headers: {
+      "x-auth-token": token,
+    },
+  });
+};
+
+export const requestDeleteUserProfileEducation = (token, eduId) => {
+  return Axios.request({
+    url: `/education/${eduId}`,
+    baseURL: "http://localhost:5000/api/profile",
+    method: "delete",
+    headers: {
+      "x-auth-token": token,
+    },
+  });
+};

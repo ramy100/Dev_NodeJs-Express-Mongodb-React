@@ -70,7 +70,8 @@ const LoginForm = () => {
               type="text"
               valueName="email"
               errorsArray={errors}
-              onChanleHandler={handleChange}
+              formData={formData}
+              setFormData={setFormData}
               icon="user"
               iconPosition="left"
             />
@@ -78,7 +79,8 @@ const LoginForm = () => {
               type="password"
               valueName="password"
               errorsArray={errors}
-              onChanleHandler={handleChange}
+              formData={formData}
+              setFormData={setFormData}
               icon="lock"
               iconPosition="left"
             />

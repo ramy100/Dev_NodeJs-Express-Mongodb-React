@@ -56,7 +56,8 @@ const Register = () => {
               type="text"
               valueName="name"
               errorsArray={errors}
-              onChanleHandler={onChange}
+              formData={formData}
+              setFormData={setFormData}
               icon="user"
               iconPosition="left"
             />
@@ -64,7 +65,8 @@ const Register = () => {
               type="text"
               valueName="email"
               errorsArray={errors}
-              onChanleHandler={onChange}
+              formData={formData}
+              setFormData={setFormData}
               icon="mail"
               iconPosition="left"
             />
@@ -72,7 +74,8 @@ const Register = () => {
               type="password"
               valueName="password"
               errorsArray={errors}
-              onChanleHandler={onChange}
+              formData={formData}
+              setFormData={setFormData}
               icon="lock"
               iconPosition="left"
             />
@@ -80,7 +83,8 @@ const Register = () => {
               type="password"
               valueName="passwordConfirmation"
               errorsArray={errors}
-              onChanleHandler={onChange}
+              formData={formData}
+              setFormData={setFormData}
               icon="lock"
               iconPosition="left"
             />
