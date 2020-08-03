@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState } from "react";
 import { Menu, Transition } from "semantic-ui-react";
 import { useSelector } from "react-redux";
 import { authuserSelector } from "../../store/slices/auth";

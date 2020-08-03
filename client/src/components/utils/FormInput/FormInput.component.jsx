@@ -6,7 +6,6 @@ const FormInput = ({
   formData,
   setFormData,
   type,
-  withPreValue,
   ...otherProps
 }) => {
   const getPlaceholder = (s) => {
@@ -30,7 +29,7 @@ const FormInput = ({
       placeholder={getPlaceholder(valueName)}
       type={type}
       error={
-        errorsArray[valueName]
+        errorsArray && errorsArray[valueName]
           ? {
               content: errorsArray[valueName],
               pointing: "below",

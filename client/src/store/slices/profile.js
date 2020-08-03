@@ -4,14 +4,13 @@ import {
   requestGetUserProfile,
   requestCreateOrUpdateUserProfile,
 } from "../api/api";
-import { showErrorPopup, showSuccessPopup } from "./popUps";
-
+import { setFormErrors, clearPrompts, setPopUp, redirectTo } from "./prompts";
+const myProfileInitialState = { social: {}, skills: [] };
 const initialState = {
-  myprofile: { social: {}, skills: [] },
+  myprofile: myProfileInitialState,
   profiles: [],
   repos: [],
   loading: false,
-  profileErrors: {},
 };
 
 const profileSlice = createSlice({
@@ -25,12 +24,11 @@ const profileSlice = createSlice({
       state.loading = false;
       state.myprofile = { ...state.myprofile, ...action.payload };
     },
-    SET_PROFILE_ERRORS: (state, action) => {
-      state.profileErrors = action.payload;
-    },
-    CLEAR_PROFILE_ERRORS: (state, action) => {
-      state.profileErrors = {};
-    },
+    CLEAR_PROFILE: (state, action) => ({
+      ...state,
+      myprofile: myProfileInitialState,
+      loading: false,
+    }),
   },
 });
 
@@ -39,8 +37,7 @@ export default profileSlice.reducer;
 const {
   LOAD_PROFILE_SUCCESS,
   LOADING_PROFILE,
-  SET_PROFILE_ERRORS,
-  CLEAR_PROFILE_ERRORS,
+  CLEAR_PROFILE,
 } = profileSlice.actions;
 
 // profile sagas
@@ -52,20 +49,24 @@ function* getUserProfile(action) {
     yield put(LOAD_PROFILE_SUCCESS(userProfile));
   } catch (error) {
     const { msg } = yield error.response.data;
-    yield put(showErrorPopup(msg));
+    yield put(CLEAR_PROFILE());
+    yield put(setPopUp("info", msg));
   }
 }
 
 function* createOrUpdateProfile({ payload: { token, formData } }) {
   try {
-    yield put(CLEAR_PROFILE_ERRORS());
+    yield put(clearPrompts());
+    yield put(LOADING_PROFILE());
     const res = yield requestCreateOrUpdateUserProfile(token, formData);
     const UserProfile = yield res.data;
     yield put(LOAD_PROFILE_SUCCESS(UserProfile));
-    yield put(showSuccessPopup("Profile Saved Successfully"));
+    yield put(setPopUp("success", "Profile Saved Successfully"));
+    yield put(redirectTo("/dashboard"));
   } catch (error) {
     const { errorMessages } = yield error.response.data;
-    yield put(SET_PROFILE_ERRORS(errorMessages));
+    yield put(CLEAR_PROFILE());
+    yield put(setFormErrors(errorMessages));
   }
 }
 
@@ -86,10 +87,6 @@ export const createOrUpdateProfileCallBegin = createAction(
 
 // profile selectors
 export const profileSelector = (state) => state.profile.myprofile;
-export const profileMessageSelector = (state) => state.profile.message;
-export const profileErrorsSelector = (state) => state.profile.profileErrors;
+export const profileLoadingSelector = (state) => state.profile.loading;
 
-//profile action callers
-export const clearProfileErrors = () => (dispatch) => {
-  dispatch(CLEAR_PROFILE_ERRORS());
-};
+export const clearProfile = () => (dispatch) => dispatch(CLEAR_PROFILE());

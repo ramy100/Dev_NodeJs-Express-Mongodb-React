@@ -5,14 +5,14 @@ import {
   requestLoginUserApi,
   requestGetUserApi,
 } from "../api/api";
-import { showLoginSuccessPopup, showLogoutPopup } from "./popUps";
+import { setFormErrors, setPopUp } from "./prompts";
+import { clearProfile } from "./profile";
 
 const initialState = {
   isLogged: false,
   loading: false,
   token: localStorage.getItem("token"),
   user: null,
-  AuthErrors: {},
 };
 const authSlice = createSlice({
   name: "auth",
@@ -24,7 +24,6 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.isLogged = true;
       state.loading = false;
-      state.AuthErrors = {};
     },
     AUTH_LOADING: (state, action) => {
       state.loading = true;
@@ -34,12 +33,8 @@ const authSlice = createSlice({
       state.loading = false;
       state.isLogged = false;
       state.user = null;
-      state.AuthErrors = action.payload;
     },
     LOGOUT_USER: (state, action) => initialState,
-    CLEAR_REGISTER_ERRORS: (state, action) => {
-      state.AuthErrors = {};
-    },
   },
 });
 
@@ -49,7 +44,6 @@ const {
   AUTH_LOADING,
   AUTH_FAILED,
   LOGOUT_USER,
-  CLEAR_REGISTER_ERRORS,
 } = authSlice.actions;
 
 // auth sagas
@@ -60,10 +54,11 @@ function* registerBeginAsync(action) {
     const token = yield res.data.token;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
-    yield put(showLoginSuccessPopup(user.name));
+    yield put(setPopUp("success", `Welcome ${user.name} !`));
   } catch (err) {
     const errors = err.response ? err.response.data.errorMessages : {};
-    yield put(AUTH_FAILED(errors));
+    yield put(AUTH_FAILED());
+    yield put(setFormErrors(errors));
   }
 }
 
@@ -74,18 +69,20 @@ function* loginBeginAsync(action) {
     const token = yield res.data.token;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
-    yield put(showLoginSuccessPopup(user.name));
+    yield put(setPopUp("success", `Welcome ${user.name} !`));
   } catch (err) {
     const errors = err.response ? err.response.data.errorMessages : {};
     yield put(AUTH_FAILED(errors));
     yield localStorage.removeItem("token");
+    yield put(setFormErrors(errors));
   }
 }
 
 function* logoutBeginAsync(action) {
   yield put(AUTH_LOADING());
   yield put(LOGOUT_USER());
-  yield put(showLogoutPopup());
+  yield put(clearProfile());
+  yield put(setPopUp("info", `Logged Out !`));
   yield localStorage.removeItem("token");
 }
 
@@ -95,7 +92,7 @@ function* loadUserAsync(action) {
     const token = yield action.payload;
     const { data: user } = yield call(requestGetUserApi, token);
     yield put(LOGIN_USER({ token, user }));
-    yield put(showLoginSuccessPopup(user.name));
+    yield put(setPopUp("success", `Welcome ${user.name} !`));
   } catch (err) {
     yield console.log(err.response);
   }
@@ -121,8 +118,4 @@ export const load_user_from_local_storage = createAction(
 //auth selectors
 export const authuserSelector = (state) => state.auth.user;
 export const authTokenSelector = (state) => state.auth.token;
-export const authErrorsSelector = (state) => state.auth.AuthErrors;
 export const authLoadingSelector = (state) => state.auth.loading;
-
-//action export
-export const clearAuthErrors = CLEAR_REGISTER_ERRORS;

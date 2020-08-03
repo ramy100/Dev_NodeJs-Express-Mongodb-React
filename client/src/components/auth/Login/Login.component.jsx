@@ -10,14 +10,16 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import {
   authuserSelector,
-  authErrorsSelector,
   authLoadingSelector,
   login_user_begin,
-  clearAuthErrors,
 } from "../../../store/slices/auth";
 import { useLocation, Link } from "react-router-dom";
 import FormInput from "../../utils/FormInput/FormInput.component";
-import { showErrorPopup } from "../../../store/slices/popUps";
+import {
+  formErrorsSelector,
+  clearPrompts,
+  setPopUp,
+} from "../../../store/slices/prompts";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({});
@@ -25,12 +27,8 @@ const LoginForm = () => {
   const user = useSelector(authuserSelector);
   const dispatch = useDispatch();
   const { state } = useLocation();
-  const errors = useSelector(authErrorsSelector);
+  const errors = useSelector(formErrorsSelector);
   const loading = useSelector(authLoadingSelector);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -44,17 +42,17 @@ const LoginForm = () => {
   useEffect(() => {
     if (state) {
       console.log(state.redirectMessage);
-      dispatch(showErrorPopup(state.redirectMessage));
+      dispatch(setPopUp("info", state.redirectMessage));
     }
     return () => {
-      dispatch(clearAuthErrors());
+      dispatch(clearPrompts());
     };
   }, []);
 
   return (
     <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
       <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as="h2" color="teal" textAlign="center">
+        <Header as="h2" color="violet" textAlign="center">
           {/* <Image src="/logo.png" /> Log-in to your account */}
           Log-in to your account
         </Header>
@@ -86,7 +84,7 @@ const LoginForm = () => {
             />
 
             <Button
-              color="teal"
+              color="violet"
               fluid
               size="large"
               type="submit"

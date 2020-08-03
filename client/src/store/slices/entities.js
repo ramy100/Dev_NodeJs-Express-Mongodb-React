@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import popUp from "./popUps";
+import prompts from "./prompts";
 export default combineReducers({
-  popUp,
+  prompts,
 });

@@ -10,25 +10,23 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import {
   authuserSelector,
-  authErrorsSelector,
   authLoadingSelector,
   register_user_begin,
-  clearAuthErrors,
 } from "../../../store/slices/auth";
 import FormInput from "../../utils/FormInput/FormInput.component";
 import { Link } from "react-router-dom";
+import {
+  formErrorsSelector,
+  clearPrompts,
+} from "../../../store/slices/prompts";
 
 const Register = () => {
   const [formData, setFormData] = useState({});
 
   const user = useSelector(authuserSelector);
-  const errors = useSelector(authErrorsSelector);
+  const errors = useSelector(formErrorsSelector);
   const loading = useSelector(authLoadingSelector);
   const dispatch = useDispatch();
-
-  const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value }); //makes copy of the old formData and then updates the key:value by inserting it again
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -38,14 +36,14 @@ const Register = () => {
   useEffect(() => {
     setFormData({});
     return () => {
-      dispatch(clearAuthErrors());
+      dispatch(clearPrompts());
     };
   }, [user]);
 
   return (
     <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
       <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as="h2" color="teal" textAlign="center">
+        <Header as="h2" color="violet" textAlign="center">
           {/* <Image src="/logo.png" /> Log-in to your account */}
           Sing-up new account
         </Header>
@@ -89,7 +87,7 @@ const Register = () => {
               iconPosition="left"
             />
 
-            <Button color="teal" fluid size="large" type="submit">
+            <Button color="violet" fluid size="large" type="submit">
               Sign Up
             </Button>
           </Segment>

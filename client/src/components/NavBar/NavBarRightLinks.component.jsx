@@ -16,7 +16,7 @@ const NavBarRightLinks = ({ fixed = false }) => {
       <Button
         as={Link}
         to="/register"
-        color="teal"
+        color="violet"
         style={{ marginLeft: "0.5em" }}
       >
         Sign Up
