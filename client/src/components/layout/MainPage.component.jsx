@@ -21,6 +21,8 @@ import { Sidebar, Segment } from "semantic-ui-react";
 import Footer from "../Footer/Footer.component";
 import CreateOrUpdataProfile from "../Profile/CreateOrUpdate/CreateOrUpdataProfile.component";
 import { PopupSelector, redirectSelector } from "../../store/slices/prompts";
+import AddExperience from "../Profile/AddExperience/AddExperience.component";
+import AddEducation from "../Profile/AddEducation/AddEducation.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -76,6 +78,16 @@ const MainPage = () => {
             exact
             path="/create/profile"
             component={CreateOrUpdataProfile}
+          />
+          <ProtectedRoute
+            exact
+            path="/add/experience"
+            component={AddExperience}
+          />
+          <ProtectedRoute
+            exact
+            path="/add/education"
+            component={AddEducation}
           />
         </Switch>
         <Footer />

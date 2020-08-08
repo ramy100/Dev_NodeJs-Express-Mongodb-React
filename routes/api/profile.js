@@ -5,7 +5,7 @@ const Profile = require("../../models/Profile");
 const config = require("config");
 const request = require("request");
 const User = require("../../models/User");
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, body } = require("express-validator");
 const { current } = require("@reduxjs/toolkit");
 //@route        GET api/Profile/me
 //@desc         Get current users profile
@@ -19,7 +19,6 @@ router.get("/me", auth, async (req, res) => {
     if (!profile) {
       return res.status(400).json({ msg: "there is no profile for this user" });
     }
-    console.log("profile", profile);
     res.send(profile);
   } catch (error) {
     console.log(error.message);
@@ -179,7 +178,11 @@ router.put(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const errorMessages = errors.errors.reduce(
+        (prev, current) => ({ ...prev, [current.param]: current.msg }),
+        {}
+      );
+      return res.status(400).json({ errorMessages });
     }
 
     const {
@@ -240,20 +243,32 @@ router.put(
     [
       check("school", "school is required").not().isEmpty(),
       check("degree", "degree name is required").not().isEmpty(),
-      check("fieldofstudy", "fieldofstudy is required").not().isEmpty(),
+      check("fieldOfStudy", "fieldofstudy is required").not().isEmpty(),
       check("from", "from Date is required").not().isEmpty(),
+      body("to").custom((value, { req }) => {
+        if (!req.body.current && !value) {
+          throw new Error("Ending date is required");
+        } else if (req.body.from <= value) {
+          throw new Error("Ending date should be past start date");
+        }
+        return true;
+      }),
     ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const errorMessages = errors.errors.reduce(
+        (prev, current) => ({ ...prev, [current.param]: current.msg }),
+        {}
+      );
+      return res.status(400).json({ errorMessages });
     }
 
     const {
       school,
       degree,
-      fieldofstudy,
+      fieldOfStudy,
       from,
       to,
       current,
@@ -262,7 +277,7 @@ router.put(
     const newEdu = {
       school,
       degree,
-      fieldofstudy,
+      fieldofstudy: fieldOfStudy,
       from,
       to,
       current,

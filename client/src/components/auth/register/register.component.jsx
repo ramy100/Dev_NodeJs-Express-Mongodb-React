@@ -48,7 +48,7 @@ const Register = () => {
           Sing-up new account
         </Header>
 
-        <Form loading={loading} onSubmit={(e) => onSubmit(e)} size="large">
+        <Form onSubmit={(e) => onSubmit(e)} size="large">
           <Segment stacked>
             <FormInput
               type="text"
@@ -87,7 +87,14 @@ const Register = () => {
               iconPosition="left"
             />
 
-            <Button color="violet" fluid size="large" type="submit">
+            <Button
+              color="violet"
+              fluid
+              size="large"
+              type="submit"
+              loading={loading}
+              disabled={loading}
+            >
               Sign Up
             </Button>
           </Segment>

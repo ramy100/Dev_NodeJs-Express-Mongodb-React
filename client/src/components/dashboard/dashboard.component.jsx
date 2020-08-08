@@ -17,14 +17,24 @@ const DashBoard = () => {
     dispatch(getProfileCallBegin(token));
   }, []);
 
-  return myProfile.status ? (
-    <Button as={Link} to="/create/profile">
-      update profile
-    </Button>
-  ) : (
-    <Button as={Link} to="/create/profile">
-      create profile
-    </Button>
+  return (
+    <div style={{ minHeight: "65vh" }}>
+      {myProfile.status ? (
+        <Button as={Link} to="/create/profile">
+          update profile
+        </Button>
+      ) : (
+        <Button as={Link} to="/create/profile">
+          create profile
+        </Button>
+      )}
+      <Button as={Link} to="/add/experience">
+        Add Experience
+      </Button>
+      <Button as={Link} to="/add/education">
+        Add Education
+      </Button>
+    </div>
   );
 };
 

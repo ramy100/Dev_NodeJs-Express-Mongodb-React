@@ -62,7 +62,7 @@ const LoginForm = () => {
             <p>Username or Password is incorrect</p>
           </Message>
         ) : null}
-        <Form loading={loading} size="large">
+        <Form size="large">
           <Segment stacked>
             <FormInput
               type="text"
@@ -88,6 +88,8 @@ const LoginForm = () => {
               fluid
               size="large"
               type="submit"
+              loading={loading}
+              disabled={loading}
               onClick={handleLogin}
             >
               Login

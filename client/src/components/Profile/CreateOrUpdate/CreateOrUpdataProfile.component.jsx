@@ -80,7 +80,11 @@ const CreateOrUpdataProfile = () => {
   return (
     <Grid centered columns={2}>
       <Grid.Column>
-        <Segment color="violet" padded style={{ margin: 30 }}>
+        <Segment
+          color="violet"
+          padded
+          style={{ marginTop: 30, marginBottom: 30, minWidth: 300 }}
+        >
           <Grid.Row>
             <Header as="h2" color="violet" icon textAlign="center">
               <Icon name="user" color="violet" circular />
@@ -89,14 +93,14 @@ const CreateOrUpdataProfile = () => {
           </Grid.Row>
           <Grid.Row centered>
             <Grid.Column>
-              <Form loading={loading}>
+              <Form>
                 <FormInput
                   type="text"
                   valueName="company"
                   errorsArray={errors}
                   setFormData={setFormData}
                   formData={formData}
-                  icon="university"
+                  icon="building outline"
                   iconPosition="left"
                   defaultValue={formData.company}
                 />
@@ -213,6 +217,8 @@ const CreateOrUpdataProfile = () => {
                   defaultValue={formData.linkedin}
                 />
                 <Button
+                  loading={loading}
+                  disabled={loading}
                   color="violet"
                   fluid
                   type="submit"

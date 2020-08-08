@@ -1,8 +1,10 @@
 import { createSlice, createAction } from "@reduxjs/toolkit";
-import { takeLeading, all, put } from "redux-saga/effects";
+import { takeLeading, all, put, call } from "redux-saga/effects";
 import {
   requestGetUserProfile,
   requestCreateOrUpdateUserProfile,
+  requestPutUserProfileExperience,
+  requestPutUserProfileEducation,
 } from "../api/api";
 import { setFormErrors, clearPrompts, setPopUp, redirectTo } from "./prompts";
 const myProfileInitialState = { social: {}, skills: [] };
@@ -70,10 +72,42 @@ function* createOrUpdateProfile({ payload: { token, formData } }) {
   }
 }
 
+function* addExperienceAsync({ payload: { token, formData } }) {
+  try {
+    yield put(LOADING_PROFILE());
+    const res = yield call(requestPutUserProfileExperience, token, formData);
+    const UserProfile = yield res.data;
+    yield put(LOAD_PROFILE_SUCCESS(UserProfile));
+    yield put(setPopUp("success", "Experience Added Successfully"));
+    yield put(redirectTo("/dashboard"));
+  } catch (error) {
+    const { errorMessages } = yield error.response.data;
+    yield put(CLEAR_PROFILE());
+    yield put(setFormErrors(errorMessages));
+  }
+}
+
+function* addEducationAsync({ payload: { token, formData } }) {
+  try {
+    yield put(LOADING_PROFILE());
+    const res = yield call(requestPutUserProfileEducation, token, formData);
+    const UserProfile = yield res.data;
+    yield put(LOAD_PROFILE_SUCCESS(UserProfile));
+    yield put(setPopUp("success", "Education Added Successfully"));
+    yield put(redirectTo("/dashboard"));
+  } catch (error) {
+    const { errorMessages } = yield error.response.data;
+    yield put(CLEAR_PROFILE());
+    yield put(setFormErrors(errorMessages));
+  }
+}
+
 export function* watchProfileAsync() {
   yield all([
     takeLeading(getProfileCallBegin.type, getUserProfile),
     takeLeading(createOrUpdateProfileCallBegin.type, createOrUpdateProfile),
+    takeLeading(addExperienceCallBegin.type, addExperienceAsync),
+    takeLeading(addEducationCallBegin.type, addEducationAsync),
   ]);
 }
 
@@ -83,6 +117,12 @@ export const getProfileCallBegin = createAction(
 );
 export const createOrUpdateProfileCallBegin = createAction(
   "profile/CREATE_OR_UPDATE_USER_PROFILE_CALL_BEGIN"
+);
+export const addExperienceCallBegin = createAction(
+  "profile/ADD_EXPERIENCE_CALL_BEGIN"
+);
+export const addEducationCallBegin = createAction(
+  "profile/ADD_EDUCATION_CALL_BEGIN"
 );
 
 // profile selectors
