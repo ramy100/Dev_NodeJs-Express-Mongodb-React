@@ -96,7 +96,7 @@ const AddExperience = () => {
                     ) : null}
                     <div>
                       <SemanticDatepicker
-                        error={!!errors.from}
+                        error={errors && errors.from ? true : false}
                         allowOnlyNumbers
                         format="DD-MM-YYYY"
                         placeholder="From Date"
@@ -128,7 +128,7 @@ const AddExperience = () => {
                       ) : null}
                       <div>
                         <SemanticDatepicker
-                          error={!!errors.to}
+                          error={errors && errors.to ? true : false}
                           allowOnlyNumbers
                           format="DD-MM-YYYY"
                           placeholder="to Date"

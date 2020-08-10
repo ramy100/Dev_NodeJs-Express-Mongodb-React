@@ -97,7 +97,7 @@ const AddEducation = () => {
                   <div>
                     <SemanticDatepicker
                       format="DD-MM-YYYY"
-                      error={!!errors.from}
+                      error={errors && errors.from ? true : false}
                       allowOnlyNumbers
                       placeholder="From Date"
                       onChange={(e, data) =>
@@ -129,7 +129,7 @@ const AddEducation = () => {
                     <div>
                       <SemanticDatepicker
                         format="DD-MM-YYYY"
-                        error={!!errors.to}
+                        error={errors && errors.to ? true : false}
                         allowOnlyNumbers
                         placeholder="to Date"
                         onChange={(e, data) =>

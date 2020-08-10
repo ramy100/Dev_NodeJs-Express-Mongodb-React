@@ -6,7 +6,7 @@ const config = require("config");
 const request = require("request");
 const User = require("../../models/User");
 const { check, validationResult, body } = require("express-validator");
-const { current } = require("@reduxjs/toolkit");
+
 //@route        GET api/Profile/me
 //@desc         Get current users profile
 //@access       Private
@@ -173,6 +173,14 @@ router.put(
       check("title", "Title is required").not().isEmpty(),
       check("company", "Company name is required").not().isEmpty(),
       check("from", "From Date is required").not().isEmpty(),
+      body("to").custom((value, { req }) => {
+        if (!req.body.current && !value) {
+          throw new Error("Ending date is required");
+        } else if (new Date(req.body.from) >= new Date(value)) {
+          throw new Error("Ending date should be past start date");
+        }
+        return true;
+      }),
     ],
   ],
   async (req, res) => {
@@ -248,7 +256,7 @@ router.put(
       body("to").custom((value, { req }) => {
         if (!req.body.current && !value) {
           throw new Error("Ending date is required");
-        } else if (req.body.from <= value) {
+        } else if (new Date(req.body.from) >= new Date(value)) {
           throw new Error("Ending date should be past start date");
         }
         return true;
