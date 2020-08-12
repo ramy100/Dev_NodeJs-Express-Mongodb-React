@@ -9,6 +9,7 @@ const NavBarLinks = () => {
   const location = useLocation();
   const [homeAnimation, sethomeAnimation] = useState(true);
   const [dashBoardAnimation, setDashBoardAnimation] = useState(true);
+  const [allProfilesAnimation, setAllProfilesAnimation] = useState(true);
   return (
     <Fragment>
       <Transition animation="pulse" duration={300} visible={homeAnimation}>
@@ -20,6 +21,21 @@ const NavBarLinks = () => {
           onClick={() => sethomeAnimation(!homeAnimation)}
         >
           Home
+        </Menu.Item>
+      </Transition>
+      <Transition
+        animation="pulse"
+        duration={300}
+        visible={allProfilesAnimation}
+      >
+        <Menu.Item
+          as={Link}
+          to="/profiles"
+          style={{ transition: ".3s" }}
+          active={location.pathname === "/profiles" ? true : false}
+          onClick={() => setAllProfilesAnimation(!allProfilesAnimation)}
+        >
+          Profiles
         </Menu.Item>
       </Transition>
       {user ? (

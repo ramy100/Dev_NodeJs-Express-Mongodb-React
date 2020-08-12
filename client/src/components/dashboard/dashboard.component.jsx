@@ -4,9 +4,21 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getProfileCallBegin,
   profileSelector,
+  deleteExperienceCallBegin,
+  profileLoadingSelector,
+  deleteEducationCallBegin,
 } from "../../store/slices/profile";
 import { authTokenSelector } from "../../store/slices/auth";
-import { Button, Grid, Segment, Divider } from "semantic-ui-react";
+import {
+  Button,
+  Grid,
+  Segment,
+  Divider,
+  Transition,
+  Dimmer,
+  Loader,
+  Placeholder,
+} from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import ProfileDetail from "../Profile/profileDetail/ProfileDetail.component";
 import Section from "../Section/Section.component";
@@ -15,6 +27,8 @@ import CardComponent from "../Card/Card.component";
 const DashBoard = () => {
   const dispatch = useDispatch();
   const token = useSelector(authTokenSelector);
+  const profileLoading = useSelector(profileLoadingSelector);
+  const myProfile = useSelector(profileSelector);
   const {
     status,
     company,
@@ -26,9 +40,11 @@ const DashBoard = () => {
     social: { youtube, facebook, twitter, instagram, linkedin },
     experience,
     education,
-  } = useSelector(profileSelector);
+  } = myProfile;
   useEffect(() => {
-    dispatch(getProfileCallBegin(token));
+    if (!myProfile.status) {
+      dispatch(getProfileCallBegin(token));
+    }
   }, []);
 
   return (
@@ -127,17 +143,26 @@ const DashBoard = () => {
                 >
                   <Grid columns={3} centered>
                     {experience && experience.length > 0 ? (
-                      experience.map((exp) => (
-                        <Grid.Column key={exp._id}>
-                          <CardComponent
-                            header={`${exp.title} at ${exp.company}`}
-                            description={exp.description}
-                            from={exp.from}
-                            to={exp.to}
-                            extra={exp.location}
-                          />
-                        </Grid.Column>
-                      ))
+                      <Transition.Group duration={1000} animation="zoom">
+                        {experience.map((exp) => (
+                          <Grid.Column key={exp._id}>
+                            <CardComponent
+                              header={`${exp.title} at ${exp.company}`}
+                              description={exp.description}
+                              from={exp.from}
+                              to={exp.to}
+                              extra={exp.location}
+                              onDelete={() =>
+                                deleteExperienceCallBegin({
+                                  token,
+                                  expId: exp._id,
+                                })
+                              }
+                              loading={profileLoading}
+                            />
+                          </Grid.Column>
+                        ))}
+                      </Transition.Group>
                     ) : (
                       <Grid.Column width="16">
                         <Segment placeholder textAlign="center">
@@ -164,16 +189,25 @@ const DashBoard = () => {
                 >
                   <Grid columns={3} centered>
                     {education && education.length > 0 ? (
-                      education.map((edu) => (
-                        <Grid.Column key={edu._id}>
-                          <CardComponent
-                            header={`${edu.degree} in ${edu.fieldofstudy}`}
-                            description={edu.description}
-                            from={edu.from}
-                            to={edu.to}
-                          />
-                        </Grid.Column>
-                      ))
+                      <Transition.Group duration={1000} animation="flash">
+                        {education.map((edu) => (
+                          <Grid.Column key={edu._id}>
+                            <CardComponent
+                              header={`${edu.degree} in ${edu.fieldofstudy}`}
+                              description={edu.description}
+                              from={edu.from}
+                              to={edu.to}
+                              onDelete={() =>
+                                deleteEducationCallBegin({
+                                  token,
+                                  eduId: edu._id,
+                                })
+                              }
+                              loading={profileLoading}
+                            />
+                          </Grid.Column>
+                        ))}
+                      </Transition.Group>
                     ) : (
                       <Grid.Column width="16">
                         <Segment placeholder textAlign="center">
@@ -194,6 +228,14 @@ const DashBoard = () => {
                   Add Education
                 </Button>
               </Fragment>
+            ) : profileLoading ? (
+              <Loader
+                style={{ marginTop: 50 }}
+                active
+                inline="centered"
+                size="huge"
+                content="Loading Profile"
+              />
             ) : (
               <Segment placeholder textAlign="center">
                 No profile yet!

@@ -54,9 +54,9 @@ export const requestGetUserProfileById = (token, userId) => {
   });
 };
 
-export const requestGetAllUsersProfile = () => {
+export const requestGetAllUsersProfile = (pageNum) => {
   return Axios.request({
-    url: "/profile",
+    url: `/profile/${pageNum}`,
     baseURL: "http://localhost:5000/api",
     method: "get",
   });

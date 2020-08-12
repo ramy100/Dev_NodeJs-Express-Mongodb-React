@@ -108,14 +108,18 @@ router.post(
 //@route        Get api/Profile
 //@desc         Get all profiles
 //@access       public
-router.get("/", async (req, res) => {
+router.get("/:pageNum", async (req, res) => {
+  const { pageNum } = req.params;
+  const limit = 7;
   try {
-    const profiles = await Profile.find().populate("user", [
-      "name",
-      "avatar",
-      "email",
-    ]);
-    res.send(profiles);
+    const profiles = await Profile.find()
+      .skip(limit * pageNum)
+      .limit(limit)
+      .sort("-date")
+      .populate("user", ["name", "avatar", "email"]);
+    const count = await Profile.estimatedDocumentCount();
+    const pages = count / limit;
+    res.json({ profiles, pages });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("server error");

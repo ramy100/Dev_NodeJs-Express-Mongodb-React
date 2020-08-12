@@ -23,6 +23,7 @@ import CreateOrUpdataProfile from "../Profile/CreateOrUpdate/CreateOrUpdataProfi
 import { PopupSelector, redirectSelector } from "../../store/slices/prompts";
 import AddExperience from "../Profile/AddExperience/AddExperience.component";
 import AddEducation from "../Profile/AddEducation/AddEducation.component";
+import ListProfiles from "../List_Profiles/ListProfiles.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ const MainPage = () => {
               </Fragment>
             )}
           />
+          <Route exact path="/profiles" component={ListProfiles} />
           <GuestRoutes exact path="/Login" component={Login} />
           <GuestRoutes exact path="/register" component={Register} />
           <ProtectedRoute exact path="/dashboard" component={DashBoard} />
