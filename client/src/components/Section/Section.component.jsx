@@ -1,7 +1,7 @@
 import React from "react";
-import { Grid, Segment, Header, Icon } from "semantic-ui-react";
+import { Grid, Segment, Header, Icon, Image } from "semantic-ui-react";
 
-const Section = ({ children, iconName, iconColor, title }) => {
+const Section = ({ children, iconName, iconColor, title, image }) => {
   return (
     <Segment
       color="violet"
@@ -10,7 +10,13 @@ const Section = ({ children, iconName, iconColor, title }) => {
     >
       <Grid.Row>
         <Header as="h2" color="violet" icon textAlign="center">
-          <Icon name={iconName} color={iconColor} circular />
+          {iconName ? (
+            <Icon name={iconName} color={iconColor} circular />
+          ) : image ? (
+            <Image src={image} size="massive" circular />
+          ) : (
+            ""
+          )}
           <Header.Content>{title}</Header.Content>
         </Header>
       </Grid.Row>

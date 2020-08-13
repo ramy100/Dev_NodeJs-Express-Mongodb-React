@@ -24,6 +24,7 @@ import { PopupSelector, redirectSelector } from "../../store/slices/prompts";
 import AddExperience from "../Profile/AddExperience/AddExperience.component";
 import AddEducation from "../Profile/AddEducation/AddEducation.component";
 import ListProfiles from "../List_Profiles/ListProfiles.component";
+import UserProfile from "../UserProfile/UserProfile.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -73,6 +74,7 @@ const MainPage = () => {
             )}
           />
           <Route exact path="/profiles" component={ListProfiles} />
+          <Route exact path="/user/:userId" component={UserProfile} />
           <GuestRoutes exact path="/Login" component={Login} />
           <GuestRoutes exact path="/register" component={Register} />
           <ProtectedRoute exact path="/dashboard" component={DashBoard} />

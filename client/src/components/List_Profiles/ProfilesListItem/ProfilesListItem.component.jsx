@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import { Item, Icon, Button, Label } from "semantic-ui-react";
 import ProfileDetail from "../../Profile/profileDetail/ProfileDetail.component";
+import { Link } from "react-router-dom";
+import UserProfile from "../../UserProfile/UserProfile.component";
 
 const ProfilesListItem = ({ profile }) => {
   return (
@@ -8,7 +10,9 @@ const ProfilesListItem = ({ profile }) => {
       <Item.Image src={profile.user.avatar} />
 
       <Item.Content>
-        <Item.Header as="a">{profile.user.name} </Item.Header>
+        <Item.Header as={Link} to={`/user/${profile.user._id}`}>
+          {profile.user.name}
+        </Item.Header>
         <Item.Meta>
           <span style={{ fontWeight: "bold", color: "purple", marginRight: 5 }}>
             Experience :
@@ -44,7 +48,12 @@ const ProfilesListItem = ({ profile }) => {
           )}
         </Item.Description>
         <Item.Extra>
-          <Button floated="right" color="violet">
+          <Button
+            floated="right"
+            color="violet"
+            as={Link}
+            to={`/user/${profile.user._id}`}
+          >
             Full Profile
             <Icon name="right chevron" />
           </Button>

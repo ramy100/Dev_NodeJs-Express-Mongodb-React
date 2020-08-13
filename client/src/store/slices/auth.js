@@ -4,7 +4,7 @@ import {
   requestRegisterUserApi,
   requestLoginUserApi,
   requestGetUserApi,
-} from "../api/api";
+} from "../api/AuthApi";
 import { setFormErrors, setPopUp } from "./prompts";
 import { clearProfile } from "./profile";
 

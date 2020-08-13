@@ -46,7 +46,7 @@ export const requestGetUserProfile = (token) => {
   });
 };
 
-export const requestGetUserProfileById = (token, userId) => {
+export const requestGetUserProfileById = (userId) => {
   return Axios.request({
     url: `/user/${userId}`,
     baseURL: "http://localhost:5000/api/profile",

@@ -8,7 +8,7 @@ import {
   requestDeleteUserProfileEducation,
   requestDeleteUserProfileExperience,
   requestGetAllUsersProfile,
-} from "../api/api";
+} from "../api/AuthApi";
 import { setFormErrors, clearPrompts, setPopUp, redirectTo } from "./prompts";
 const myProfileInitialState = {
   social: {},

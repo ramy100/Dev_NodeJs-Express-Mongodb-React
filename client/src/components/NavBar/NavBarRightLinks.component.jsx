@@ -9,7 +9,7 @@ const NavBarRightLinks = ({ fixed = false }) => {
   const user = useSelector(authuserSelector);
   return !user ? (
     <Fragment>
-      <Button as={Link} to="login" inverted={!fixed}>
+      <Button as={Link} to="/login" inverted={!fixed}>
         <Icon name="user" />
         Log in
       </Button>
