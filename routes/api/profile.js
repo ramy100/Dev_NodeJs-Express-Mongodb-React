@@ -34,8 +34,8 @@ router.post(
   [
     auth,
     [
-      check("status", "status is required").not().isEmpty(),
-      check("skills", "skills are required").not().isEmpty(),
+      check("status", "status is required").exists().not().isEmpty(),
+      check("skills", "skills are required").exists().not().isEmpty(),
     ],
   ],
   async (req, res) => {
@@ -53,7 +53,7 @@ router.post(
       location,
       bio,
       status,
-      githubUserName,
+      githubusername,
       skills,
       youtube,
       facebook,
@@ -61,27 +61,24 @@ router.post(
       instagram,
       linkedin,
     } = req.body; //object destructure
-
     //buld profile object
-    const profileFields = {};
-    profileFields.user = req.user.id;
-    if (company) profileFields.company = company;
-    if (website) profileFields.website = website;
-    if (location) profileFields.location = location;
-    if (bio) profileFields.bio = bio;
-    if (status) profileFields.status = status;
-    if (githubUserName) profileFields.githubusername = githubUserName;
-    if (skills) {
-      profileFields.skills = [...skills].map((skill) => skill.trim()); //getting array of skills without the white spaces
-    }
-
-    //build social object
-    profileFields.social = {};
-    if (youtube) profileFields.social.youtube = youtube;
-    if (twitter) profileFields.social.twitter = twitter;
-    if (facebook) profileFields.social.facebook = facebook;
-    if (linkedin) profileFields.social.linkedin = linkedin;
-    if (instagram) profileFields.social.instagram = instagram;
+    const profileFields = {
+      user: req.user.id,
+      company: company || "",
+      website: website || "",
+      location: location || "",
+      bio: bio || "",
+      status,
+      githubusername: githubusername || "",
+      skills: [...skills].map((skill) => skill.trim()),
+      social: {
+        youtube: youtube || "",
+        twitter: twitter || "",
+        facebook: facebook || "",
+        linkedin: linkedin || "",
+        instagram: instagram || "",
+      },
+    };
 
     try {
       let profile = await Profile.findOne({ user: req.user.id });
@@ -105,7 +102,7 @@ router.post(
   }
 );
 
-//@route        Get api/Profile
+//@route        Get api/Profile/:pageNum
 //@desc         Get all profiles
 //@access       public
 router.get("/:pageNum", async (req, res) => {
@@ -255,7 +252,7 @@ router.put(
     [
       check("school", "school is required").not().isEmpty(),
       check("degree", "degree name is required").not().isEmpty(),
-      check("fieldOfStudy", "fieldofstudy is required").not().isEmpty(),
+      check("fieldofstudy", "Field of study is required").not().isEmpty(),
       check("from", "from Date is required").not().isEmpty(),
       body("to").custom((value, { req }) => {
         if (!req.body.current && !value) {
@@ -280,7 +277,7 @@ router.put(
     const {
       school,
       degree,
-      fieldOfStudy,
+      fieldofstudy,
       from,
       to,
       current,
@@ -289,7 +286,7 @@ router.put(
     const newEdu = {
       school,
       degree,
-      fieldofstudy: fieldOfStudy,
+      fieldofstudy,
       from,
       to,
       current,

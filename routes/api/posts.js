@@ -3,7 +3,6 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const Post = require("../../models/Post");
-const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 
 //@route        POST api/Posts
@@ -16,9 +15,12 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const errorMessages = errors.errors.reduce(
+        (acc, cur) => ({ ...acc, [cur.param]: cur.msg }),
+        {}
+      );
+      return res.status(400).json({ errorMessages });
     }
-
     try {
       const user = await User.findById(req.user.id).select("-password");
 
@@ -38,12 +40,18 @@ router.post(
   }
 );
 
-//@route        Get api/Posts
+//@route        Get api/Posts/:pageNum
 //@desc         get all posts
 //@access       private
-router.get("/", auth, async (req, res) => {
+router.post("/page", auth, async (req, res) => {
+  const { pageNum, toSkip } = req.body;
+  const limit = 7 + toSkip;
   try {
-    const posts = await Post.find().sort({ date: -1 }).select("-__v");
+    const posts = await Post.find()
+      .skip(limit * pageNum)
+      .limit(limit)
+      .sort({ date: -1 })
+      .select("-__v");
     res.send(posts);
   } catch (err) {
     console.log(err.messsage);

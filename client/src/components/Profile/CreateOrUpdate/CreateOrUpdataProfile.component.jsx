@@ -30,6 +30,7 @@ const CreateOrUpdataProfile = () => {
     bio,
     social: { youtube, linkedin, instagram, twitter, facebook },
     status,
+    location,
     website,
     githubusername,
   } = useSelector(profileSelector);
@@ -40,6 +41,7 @@ const CreateOrUpdataProfile = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
+    console.log(formData);
     dispatch(createOrUpdateProfileCallBegin({ token, formData }));
   };
 
@@ -49,6 +51,7 @@ const CreateOrUpdataProfile = () => {
       company,
       bio,
       status,
+      location,
       website,
       facebook,
       instagram,
@@ -81,13 +84,12 @@ const CreateOrUpdataProfile = () => {
     <Grid centered columns={2}>
       <Grid.Column>
         <Segment
-          color="violet"
           padded
           style={{ marginTop: 30, marginBottom: 30, minWidth: 300 }}
         >
           <Grid.Row>
-            <Header as="h2" color="violet" icon textAlign="center">
-              <Icon name="user" color="violet" circular />
+            <Header as="h2" icon textAlign="center">
+              <Icon name="user" circular />
               <Header.Content>Profile</Header.Content>
             </Header>
           </Grid.Row>
@@ -133,6 +135,16 @@ const CreateOrUpdataProfile = () => {
                   icon="briefcase"
                   iconPosition="left"
                   defaultValue={formData.status}
+                />
+                <FormInput
+                  type="text"
+                  valueName="location"
+                  errorsArray={errors}
+                  setFormData={setFormData}
+                  formData={formData}
+                  icon="location arrow"
+                  iconPosition="left"
+                  defaultValue={formData.location}
                 />
                 <Form.Field>
                   {errors && errors.skills ? (
@@ -219,7 +231,7 @@ const CreateOrUpdataProfile = () => {
                 <Button
                   loading={loading}
                   disabled={loading}
-                  color="violet"
+                  color="vk"
                   fluid
                   type="submit"
                   onClick={(e) => handleSubmit(e)}

@@ -30,25 +30,15 @@ const UserProfile = ({ match }) => {
         <Grid.Column width={12}>
           {!loading ? (
             <Fragment>
-              <Segment
-                style={{ marginTop: 50, marginBottom: 50 }}
-                color="violet"
-                raised
-              >
+              <Segment style={{ marginTop: 50, marginBottom: 50 }} raised>
                 <Grid centered>
-                  <Grid.Row color="violet">
+                  <Grid.Row color="blue">
                     <Image src={user.avatar} circular size="medium" />
                   </Grid.Row>
-                  <Grid.Row color="violet">
-                    <h1
-                      initial={{ x: -700 }}
-                      animate={{ x: 0 }}
-                      transition={{ ease: "anticipate", duration: 1 }}
-                    >
-                      {user.name}
-                    </h1>
+                  <Grid.Row color="blue">
+                    <h1>{user.name}</h1>
                   </Grid.Row>
-                  <Grid.Row color="violet" columns={8}>
+                  <Grid.Row columns={8} color="blue">
                     {website ? (
                       <Grid.Column textAlign="center">
                         <Icon name="world" />
@@ -68,11 +58,11 @@ const UserProfile = ({ match }) => {
                   </Grid.Row>
                 </Grid>
               </Segment>
-              <Segment color="violet" placeholder raised>
+              <Segment placeholder raised>
                 <Grid divided="vertically">
                   <Grid.Row>
                     <Grid.Column textAlign="center">
-                      <Header color="violet">Bio</Header>
+                      <Header>Bio</Header>
                       <p>
                         {bio ? (
                           <span style={{ fontSize: 18 }}>{bio}</span>
@@ -84,7 +74,7 @@ const UserProfile = ({ match }) => {
                   </Grid.Row>
                   <Grid.Row>
                     <Grid.Column textAlign="center">
-                      <Header color="violet">Skills</Header>
+                      <Header>Skills</Header>
                       {skills
                         ? skills.map((skill) => (
                             <div
@@ -103,7 +93,7 @@ const UserProfile = ({ match }) => {
               <Grid columns={2} style={{ marginBottom: 50, marginTop: 50 }}>
                 <Grid.Column stretched>
                   <Segment raised>
-                    <Header color="violet">Experience</Header>
+                    <Header>Experience</Header>
                     <Grid divided="vertically">
                       {experience && experience.length > 0 ? (
                         experience.map((exp) => (
@@ -152,7 +142,7 @@ const UserProfile = ({ match }) => {
                 </Grid.Column>
                 <Grid.Column>
                   <Segment raised>
-                    <Header color="violet">Education</Header>
+                    <Header>Education</Header>
                     <Grid divided="vertically">
                       {education && education.length > 0 ? (
                         education.map((edu) => (

@@ -47,13 +47,12 @@ const AddEducation = () => {
     <Grid centered columns={2}>
       <Grid.Column>
         <Segment
-          color="violet"
           padded
           style={{ marginTop: 30, marginBottom: 30, minWidth: 300 }}
         >
           <Grid.Row>
-            <Header as="h2" color="violet" icon textAlign="center">
-              <Icon name="user" color="violet" circular />
+            <Header as="h2" icon textAlign="center">
+              <Icon name="user" circular />
               <Header.Content>Add New Education</Header.Content>
             </Header>
           </Grid.Row>
@@ -158,7 +157,7 @@ const AddEducation = () => {
                 <Button
                   loading={loading}
                   disabled={loading}
-                  color="violet"
+                  color="vk"
                   fluid
                   type="submit"
                   onClick={(e) => handleSubmit(e)}

@@ -50,7 +50,7 @@ const ProfilesListItem = ({ profile }) => {
         <Item.Extra>
           <Button
             floated="right"
-            color="violet"
+            color="vk"
             as={Link}
             to={`/user/${profile.user._id}`}
           >

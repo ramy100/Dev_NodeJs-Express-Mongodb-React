@@ -3,13 +3,9 @@ import { Grid, Segment, Header, Icon, Image } from "semantic-ui-react";
 
 const Section = ({ children, iconName, iconColor, title, image }) => {
   return (
-    <Segment
-      color="violet"
-      padded
-      style={{ marginTop: 30, marginBottom: 30, minWidth: 500 }}
-    >
+    <Segment padded style={{ marginTop: 30, marginBottom: 30, minWidth: 500 }}>
       <Grid.Row>
-        <Header as="h2" color="violet" icon textAlign="center">
+        <Header as="h2" icon textAlign="center">
           {iconName ? (
             <Icon name={iconName} color={iconColor} circular />
           ) : image ? (

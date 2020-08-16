@@ -25,6 +25,7 @@ import AddExperience from "../Profile/AddExperience/AddExperience.component";
 import AddEducation from "../Profile/AddEducation/AddEducation.component";
 import ListProfiles from "../List_Profiles/ListProfiles.component";
 import UserProfile from "../UserProfile/UserProfile.component";
+import ListPosts from "../Posts/ListPosts/ListPosts.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -93,6 +94,7 @@ const MainPage = () => {
             path="/add/education"
             component={AddEducation}
           />
+          <ProtectedRoute exact path="/posts" component={ListPosts} />
         </Switch>
         <Footer />
       </Router>

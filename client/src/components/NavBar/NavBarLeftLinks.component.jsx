@@ -10,6 +10,7 @@ const NavBarLinks = () => {
   const [homeAnimation, sethomeAnimation] = useState(true);
   const [dashBoardAnimation, setDashBoardAnimation] = useState(true);
   const [allProfilesAnimation, setAllProfilesAnimation] = useState(true);
+  const [allPostsAnimation, setAllPostsAnimation] = useState(true);
   return (
     <Fragment>
       <Transition animation="pulse" duration={300} visible={homeAnimation}>
@@ -23,6 +24,41 @@ const NavBarLinks = () => {
           Home
         </Menu.Item>
       </Transition>
+
+      {user ? (
+        <Fragment>
+          <Transition
+            animation="pulse"
+            duration={300}
+            visible={dashBoardAnimation}
+          >
+            <Menu.Item
+              as={Link}
+              to="/dashboard"
+              style={{ transition: ".3s" }}
+              active={location.pathname === "/dashboard" ? true : false}
+              onClick={() => setDashBoardAnimation(!dashBoardAnimation)}
+            >
+              DashBoard
+            </Menu.Item>
+          </Transition>
+          <Transition
+            animation="pulse"
+            duration={300}
+            visible={allPostsAnimation}
+          >
+            <Menu.Item
+              as={Link}
+              to="/posts"
+              style={{ transition: ".3s" }}
+              active={location.pathname === "/posts" ? true : false}
+              onClick={() => setAllPostsAnimation(!allPostsAnimation)}
+            >
+              Posts
+            </Menu.Item>
+          </Transition>
+        </Fragment>
+      ) : null}
       <Transition
         animation="pulse"
         duration={300}
@@ -38,23 +74,6 @@ const NavBarLinks = () => {
           Profiles
         </Menu.Item>
       </Transition>
-      {user ? (
-        <Transition
-          animation="pulse"
-          duration={300}
-          visible={dashBoardAnimation}
-        >
-          <Menu.Item
-            as={Link}
-            to="/dashboard"
-            style={{ transition: ".3s" }}
-            active={location.pathname === "/dashboard" ? true : false}
-            onClick={() => setDashBoardAnimation(!dashBoardAnimation)}
-          >
-            DashBoard
-          </Menu.Item>
-        </Transition>
-      ) : null}
     </Fragment>
   );
 };

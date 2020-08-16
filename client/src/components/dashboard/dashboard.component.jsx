@@ -51,7 +51,7 @@ const DashBoard = () => {
     <div style={{ minHeight: "65vh" }}>
       <Grid centered columns={2}>
         <Grid.Column>
-          <Section iconColor="violet" iconName="user" title="My profile">
+          <Section iconName="user" title="My profile">
             {status ? (
               <Fragment>
                 <Segment placeholder textAlign="center">
@@ -131,19 +131,15 @@ const DashBoard = () => {
                   as={Link}
                   style={{ marginTop: 10, marginBottom: 10 }}
                   fluid
-                  color="violet"
+                  color="vk"
                   to="/create/profile"
                 >
                   update profile
                 </Button>
-                <Section
-                  iconColor="violet"
-                  iconName="briefcase"
-                  title="Work Experience"
-                >
+                <Section iconName="briefcase" title="Work Experience">
                   <Grid columns={3} centered>
                     {experience && experience.length > 0 ? (
-                      <Transition.Group duration={1000} animation="zoom">
+                      <Transition.Group duration={1000} animation="flash">
                         {experience.map((exp) => (
                           <Grid.Column key={exp._id}>
                             <CardComponent
@@ -177,16 +173,12 @@ const DashBoard = () => {
                   as={Link}
                   style={{ marginTop: 10, marginBottom: 10 }}
                   fluid
-                  color="violet"
+                  color="vk"
                   to="/add/experience"
                 >
                   Add Experience
                 </Button>
-                <Section
-                  iconColor="violet"
-                  iconName="graduation"
-                  title="Education"
-                >
+                <Section iconName="graduation" title="Education">
                   <Grid columns={3} centered>
                     {education && education.length > 0 ? (
                       <Transition.Group duration={1000} animation="flash">
@@ -222,7 +214,7 @@ const DashBoard = () => {
                   as={Link}
                   style={{ marginTop: 10, marginBottom: 10 }}
                   fluid
-                  color="violet"
+                  color="vk"
                   to="/add/education"
                 >
                   Add Education
