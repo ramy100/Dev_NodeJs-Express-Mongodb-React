@@ -8,8 +8,29 @@ import {
   Label,
   Icon,
 } from "semantic-ui-react";
+import {
+  likePostCallBegin,
+  unLikePostCallBegin,
+} from "../../../store/slices/posts";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  authTokenSelector,
+  authuserSelector,
+} from "../../../store/slices/auth";
 
 const PostComponent = ({ post }) => {
+  const dispatch = useDispatch();
+  const token = useSelector(authTokenSelector);
+  const user = useSelector(authuserSelector);
+  const isLiked = post.likes.some((like) => like.user === user._id)
+    ? true
+    : false;
+  const likePost = () => {
+    isLiked
+      ? dispatch(unLikePostCallBegin({ token, postId: post._id }))
+      : dispatch(likePostCallBegin({ token, postId: post._id }));
+  };
+
   return (
     <Segment raised style={{ borderRadius: 10, width: "100%" }}>
       <Grid>
@@ -38,11 +59,19 @@ const PostComponent = ({ post }) => {
               <Grid.Row columns={2}>
                 <Grid.Column>
                   <Button fluid as="div" labelPosition="right">
-                    <Button fluid color="vk">
-                      <Icon name="heart" />
-                      Like
+                    <Button
+                      fluid
+                      color={isLiked ? "red" : "vk"}
+                      onClick={likePost}
+                    >
+                      <Icon
+                        name={
+                          isLiked ? "thumbs down outline" : "thumbs up outline"
+                        }
+                      />
+                      {isLiked ? "Unlike" : "Like"}
                     </Button>
-                    <Label as="a" basic pointing="left">
+                    <Label basic pointing="left">
                       {post.likes.length}
                     </Label>
                   </Button>

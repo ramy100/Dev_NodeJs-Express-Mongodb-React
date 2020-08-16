@@ -1,7 +1,13 @@
 import { createSlice, createAction, current } from "@reduxjs/toolkit";
 import { takeLeading, all, put } from "redux-saga/effects";
 import { setFormErrors, clearPrompts, setPopUp, redirectTo } from "./prompts";
-import { requestCreatePost, requestGetAllPosts } from "../api/PostsApi";
+import {
+  requestCreatePost,
+  requestGetAllPosts,
+  requestLikePostById,
+  requestUnLikePostById,
+} from "../api/PostsApi";
+import { STATES } from "mongoose";
 const initialState = {
   posts: [],
   loading: false,
@@ -42,6 +48,16 @@ const postsSlice = createSlice({
     OPEN_CREATE_MODAL: (state, action) => {
       state.openCreatePostModal = true;
     },
+    LIKE_POST_SUCCESSL: (state, action) => {
+      state.posts = state.posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
+    },
+    UNLIKE_POST_SUCCESSL: (state, action) => {
+      state.posts = state.posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
+    },
   },
 });
 
@@ -55,6 +71,8 @@ const {
   NO_MORE_POSTS,
   OPEN_CREATE_MODAL,
   CLOSE_CREATE_MODAL,
+  LIKE_POST_SUCCESSL,
+  UNLIKE_POST_SUCCESSL,
 } = postsSlice.actions;
 
 // posts sagas
@@ -86,14 +104,36 @@ function* getPostsAsync({ payload: { token, pageNum, addedPosts } }) {
   }
 }
 
+function* likePostAsync({ payload: { token, postId } }) {
+  try {
+    const res = yield requestLikePostById(token, postId);
+    yield put(LIKE_POST_SUCCESSL(res.data));
+  } catch (error) {
+    yield put(setPopUp("info", error.response.data.msg));
+  }
+}
+
+function* unLikePostAsync({ payload: { token, postId } }) {
+  try {
+    const res = yield requestUnLikePostById(token, postId);
+    yield put(UNLIKE_POST_SUCCESSL(res.data));
+  } catch (error) {
+    yield put(setPopUp("info", error.response.data.msg));
+  }
+}
+
 export function* watchPostsAsync() {
   yield all([takeLeading(createPostCallBegin.type, createPostAsync)]);
   yield all([takeLeading(getPostsCallBegin.type, getPostsAsync)]);
+  yield all([takeLeading(likePostCallBegin.type, likePostAsync)]);
+  yield all([takeLeading(unLikePostCallBegin.type, unLikePostAsync)]);
 }
 
 // posts actions
 export const createPostCallBegin = createAction("posts/CREATE_POST_CALL_BEGIN");
 export const getPostsCallBegin = createAction("posts/GET_POSTS_CALL_BEGIN");
+export const likePostCallBegin = createAction("posts/LIKE_POST_CALL_BEGIN");
+export const unLikePostCallBegin = createAction("posts/UNLIKE_POST_CALL_BEGIN");
 
 //export action callers
 export const closeModal = () => (dispatch) => dispatch(CLOSE_CREATE_MODAL());
