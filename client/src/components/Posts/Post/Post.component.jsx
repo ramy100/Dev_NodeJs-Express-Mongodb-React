@@ -11,8 +11,10 @@ import {
 import {
   likePostCallBegin,
   unLikePostCallBegin,
+  postsLoadingSelector,
 } from "../../../store/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   authTokenSelector,
   authuserSelector,
@@ -30,6 +32,7 @@ const PostComponent = ({ post }) => {
       ? dispatch(unLikePostCallBegin({ token, postId: post._id }))
       : dispatch(likePostCallBegin({ token, postId: post._id }));
   };
+  const loading = useSelector(postsLoadingSelector);
 
   return (
     <Segment raised style={{ borderRadius: 10, width: "100%" }}>
@@ -37,7 +40,7 @@ const PostComponent = ({ post }) => {
         <Grid.Row>
           <Grid.Column width={2}>
             <Image size="small" src={post.avatar} />
-            <Header content={post.name} />
+            <Header textAlign="center" content={post.name} />
           </Grid.Column>
           <Grid.Column width={14} verticalAlign="middle">
             <p
@@ -46,6 +49,7 @@ const PostComponent = ({ post }) => {
                 fontSize: 15,
                 fontWeight: "bold",
                 color: "#0f4c75",
+                textAlign: "center",
               }}
             >
               {post.text}
@@ -63,6 +67,8 @@ const PostComponent = ({ post }) => {
                       fluid
                       color={isLiked ? "red" : "vk"}
                       onClick={likePost}
+                      loading={loading}
+                      disabled={loading}
                     >
                       <Icon
                         name={
@@ -77,9 +83,19 @@ const PostComponent = ({ post }) => {
                   </Button>
                 </Grid.Column>
                 <Grid.Column>
-                  <Button fluid color="green">
-                    <Icon name="comment" />
-                    Comment
+                  <Button
+                    fluid
+                    as={Link}
+                    to={`post/${post._id}`}
+                    labelPosition="right"
+                  >
+                    <Button fluid color="green">
+                      <Icon name="comment" />
+                      Discussion
+                    </Button>
+                    <Label basic pointing="left">
+                      {post.comments.length}
+                    </Label>
                   </Button>
                 </Grid.Column>
               </Grid.Row>

@@ -26,6 +26,7 @@ import {
 import {
   clearPrompts,
   formErrorsSelector,
+  clearFormSelector,
 } from "../../../store/slices/prompts";
 const CreatePost = () => {
   const user = useSelector(authuserSelector);
@@ -35,7 +36,7 @@ const CreatePost = () => {
   const loading = useSelector(postsLoadingSelector);
   const errors = useSelector(formErrorsSelector);
   const open = useSelector(openCreatePostModalSelector);
-
+  const clear = useSelector(clearFormSelector);
   const createPost = async () => {
     dispatch(createPostCallBegin({ token, text }));
   };
@@ -45,6 +46,10 @@ const CreatePost = () => {
       dispatch(clearPrompts());
     };
   }, []);
+
+  useEffect(() => {
+    setText("");
+  }, [clear]);
 
   return (
     <Fragment>

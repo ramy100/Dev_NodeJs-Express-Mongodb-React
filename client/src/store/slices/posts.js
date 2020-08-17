@@ -1,11 +1,18 @@
 import { createSlice, createAction, current } from "@reduxjs/toolkit";
 import { takeLeading, all, put } from "redux-saga/effects";
-import { setFormErrors, clearPrompts, setPopUp, redirectTo } from "./prompts";
+import {
+  setFormErrors,
+  clearPrompts,
+  setPopUp,
+  redirectTo,
+  clearForm,
+} from "./prompts";
 import {
   requestCreatePost,
   requestGetAllPosts,
   requestLikePostById,
   requestUnLikePostById,
+  requestPutCommentToPost,
 } from "../api/PostsApi";
 import { STATES } from "mongoose";
 const initialState = {
@@ -48,15 +55,23 @@ const postsSlice = createSlice({
     OPEN_CREATE_MODAL: (state, action) => {
       state.openCreatePostModal = true;
     },
-    LIKE_POST_SUCCESSL: (state, action) => {
+    LIKE_POST_SUCCESS: (state, action) => {
       state.posts = state.posts.map((post) =>
         post._id === action.payload._id ? action.payload : post
       );
+      state.loading = false;
     },
-    UNLIKE_POST_SUCCESSL: (state, action) => {
+    UNLIKE_POST_SUCCESS: (state, action) => {
       state.posts = state.posts.map((post) =>
         post._id === action.payload._id ? action.payload : post
       );
+      state.loading = false;
+    },
+    ADD_COMMENT_SUCCESS: (state, action) => {
+      state.posts = state.posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
+      state.loading = false;
     },
   },
 });
@@ -71,8 +86,9 @@ const {
   NO_MORE_POSTS,
   OPEN_CREATE_MODAL,
   CLOSE_CREATE_MODAL,
-  LIKE_POST_SUCCESSL,
-  UNLIKE_POST_SUCCESSL,
+  LIKE_POST_SUCCESS,
+  UNLIKE_POST_SUCCESS,
+  ADD_COMMENT_SUCCESS,
 } = postsSlice.actions;
 
 // posts sagas
@@ -84,6 +100,7 @@ function* createPostAsync({ payload: { token, text } }) {
     yield put(CREATE_POST_SUCCESS(res.data));
     yield put(setPopUp("success", "Post Created Successfully !"));
     yield put(clearPrompts());
+    yield put(clearForm());
   } catch (error) {
     const { errorMessages } = yield error.response.data;
     yield put(setFormErrors(errorMessages));
@@ -106,19 +123,43 @@ function* getPostsAsync({ payload: { token, pageNum, addedPosts } }) {
 
 function* likePostAsync({ payload: { token, postId } }) {
   try {
+    yield put(REQUEST_LAODING());
     const res = yield requestLikePostById(token, postId);
-    yield put(LIKE_POST_SUCCESSL(res.data));
+    yield put(LIKE_POST_SUCCESS(res.data));
   } catch (error) {
+    yield put(REQUEST_FAILED());
+
     yield put(setPopUp("info", error.response.data.msg));
   }
 }
 
 function* unLikePostAsync({ payload: { token, postId } }) {
   try {
+    yield put(REQUEST_LAODING());
     const res = yield requestUnLikePostById(token, postId);
-    yield put(UNLIKE_POST_SUCCESSL(res.data));
+    yield put(UNLIKE_POST_SUCCESS(res.data));
   } catch (error) {
-    yield put(setPopUp("info", error.response.data.msg));
+    yield put(REQUEST_FAILED());
+
+    yield put(setPopUp("info", "Failed to unlike !"));
+  }
+}
+
+function* addCommentAsync({ payload: { token, postId, text } }) {
+  try {
+    yield put(REQUEST_LAODING());
+    const res = yield requestPutCommentToPost(token, postId, { text });
+    yield put(ADD_COMMENT_SUCCESS(res.data));
+    yield put(clearPrompts());
+    yield put(clearForm());
+  } catch (error) {
+    const { errorMessages } = yield error.response.data;
+    if (errorMessages) {
+      yield put(setFormErrors(errorMessages));
+    } else {
+      yield put(setPopUp("info", "Failed adding comment"));
+    }
+    yield put(REQUEST_FAILED());
   }
 }
 
@@ -127,6 +168,7 @@ export function* watchPostsAsync() {
   yield all([takeLeading(getPostsCallBegin.type, getPostsAsync)]);
   yield all([takeLeading(likePostCallBegin.type, likePostAsync)]);
   yield all([takeLeading(unLikePostCallBegin.type, unLikePostAsync)]);
+  yield all([takeLeading(createCommentCallBegin.type, addCommentAsync)]);
 }
 
 // posts actions
@@ -134,6 +176,9 @@ export const createPostCallBegin = createAction("posts/CREATE_POST_CALL_BEGIN");
 export const getPostsCallBegin = createAction("posts/GET_POSTS_CALL_BEGIN");
 export const likePostCallBegin = createAction("posts/LIKE_POST_CALL_BEGIN");
 export const unLikePostCallBegin = createAction("posts/UNLIKE_POST_CALL_BEGIN");
+export const createCommentCallBegin = createAction(
+  "posts/CREATE_COMMENT_CALL_BEGIN"
+);
 
 //export action callers
 export const closeModal = () => (dispatch) => dispatch(CLOSE_CREATE_MODAL());

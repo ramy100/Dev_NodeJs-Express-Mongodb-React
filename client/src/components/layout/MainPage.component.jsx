@@ -26,6 +26,7 @@ import AddEducation from "../Profile/AddEducation/AddEducation.component";
 import ListProfiles from "../List_Profiles/ListProfiles.component";
 import UserProfile from "../UserProfile/UserProfile.component";
 import ListPosts from "../Posts/ListPosts/ListPosts.component";
+import PostDiscussion from "../Posts/PostDiscussion/PostDiscussion.component";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -76,6 +77,11 @@ const MainPage = () => {
           />
           <Route exact path="/profiles" component={ListProfiles} />
           <Route exact path="/user/:userId" component={UserProfile} />
+          <ProtectedRoute
+            exact
+            path="/post/:postId"
+            component={PostDiscussion}
+          />
           <GuestRoutes exact path="/Login" component={Login} />
           <GuestRoutes exact path="/register" component={Register} />
           <ProtectedRoute exact path="/dashboard" component={DashBoard} />

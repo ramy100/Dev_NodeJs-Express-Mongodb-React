@@ -188,6 +188,14 @@ router.put(
   "/comment/:id",
   [auth, [check("text", "Text is required").not().isEmpty()]],
   async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.errors.reduce(
+        (acc, cur) => ({ ...acc, [cur.param]: cur.msg }),
+        {}
+      );
+      return res.status(400).json({ errorMessages });
+    }
     try {
       const post = await Post.findById(req.params.id);
       if (!post) {
