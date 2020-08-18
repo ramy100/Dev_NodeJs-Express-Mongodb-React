@@ -15,9 +15,7 @@ import {
   Segment,
   Divider,
   Transition,
-  Dimmer,
   Loader,
-  Placeholder,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import ProfileDetail from "../Profile/profileDetail/ProfileDetail.component";
@@ -48,7 +46,7 @@ const DashBoard = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: "65vh" }}>
+    <div style={{ minHeight: "66vh" }}>
       <Grid centered columns={2}>
         <Grid.Column>
           <Section iconName="user" title="My profile">

@@ -20,7 +20,7 @@ router.post(
       "password",
       "Enter a valid password with 6 or more characters"
     ).isLength({ min: 6 }),
-    body("passwordConfirmation").custom((value, { req }) => {
+    body("passwordconfirmation").custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Password confirmation does not match password");
       }

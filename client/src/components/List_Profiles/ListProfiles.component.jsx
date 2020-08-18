@@ -25,9 +25,9 @@ const ListProfiles = () => {
   }, []);
 
   useEffect(() => {
-    if (!currentList) {
-      dispatch(getAllProfilesCallBegin(currentPage));
-    }
+    // if (!currentList) {
+    dispatch(getAllProfilesCallBegin(currentPage));
+    // }
   }, [currentPage]);
 
   const ProfilesElements = currentList ? (

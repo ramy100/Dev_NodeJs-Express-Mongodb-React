@@ -9,7 +9,9 @@ import { MediaContextProvider } from "./media";
 const App = () => (
   <MediaContextProvider>
     <Provider store={store}>
-      <MainPage />
+      <div className="soso">
+        <MainPage />
+      </div>
     </Provider>
   </MediaContextProvider>
 );

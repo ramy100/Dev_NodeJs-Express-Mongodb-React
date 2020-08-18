@@ -12,7 +12,8 @@ import {
 import { useSelector } from "react-redux";
 import { authuserSelector } from "../../store/slices/auth";
 import { Link } from "react-router-dom";
-
+import mysvg from "../../img/undraw_Freelancer_re_irh4.svg";
+import background from "../../img/back3.png";
 const Landing = ({ mobile }) => {
   const user = useSelector(authuserSelector);
   return (
@@ -58,49 +59,45 @@ const Landing = ({ mobile }) => {
           )}
         </Container>
       </Segment>
-      <Segment style={{ padding: "8em 0em" }} vertical>
+      <Segment
+        style={{ padding: "8em 0em", backgroundColor: "white" }}
+        vertical
+      >
         <Grid container stackable verticalAlign="middle">
           <Grid.Row>
             <Grid.Column width={8}>
               <Header as="h3" style={{ fontSize: "2em" }}>
-                We Help Companies and Companions
+                We Help Job Seekers
               </Header>
               <p style={{ fontSize: "1.33em" }}>
-                We can give your company superpowers to do things that they
-                never thought possible. Let us delight your customers and
-                empower your needs... through pure data analytics.
+                We can connect you to the company you are looking forward to
+                work with . Let us boost your career.
               </p>
               <Header as="h3" style={{ fontSize: "2em" }}>
-                We Make Bananas That Can Dance
+                We can connect you with outhers in same field
               </Header>
               <p style={{ fontSize: "1.33em" }}>
-                Yes that's right, you thought it was the stuff of dreams, but
-                even bananas can be bioengineered.
+                You can post here about your thoughts and get help from others !
               </p>
             </Grid.Column>
             <Grid.Column floated="right" width={6}>
-              <Image
-                bordered
-                rounded
-                size="large"
-                src="/images/wireframe/white-image.png"
-              />
+              <Image bordered rounded size="large" src={mysvg} />
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
+          {/* <Grid.Row>
             <Grid.Column textAlign="center">
               <Button size="huge">Check Them Out</Button>
             </Grid.Column>
-          </Grid.Row>
+          </Grid.Row> */}
         </Grid>
       </Segment>
 
-      <Segment style={{ padding: "0em" }} vertical>
+      {/* <Segment style={{ padding: "0em" }} vertical>
         <Grid celled="internally" columns="equal" stackable>
           <Grid.Row textAlign="center">
             <Grid.Column style={{ paddingBottom: "5em", paddingTop: "5em" }}>
               <Header as="h3" style={{ fontSize: "2em" }}>
-                "What a Company"
+                "Why Us ?"
               </Header>
               <p style={{ fontSize: "1.33em" }}>
                 That is what they all say about us
@@ -108,12 +105,9 @@ const Landing = ({ mobile }) => {
             </Grid.Column>
             <Grid.Column style={{ paddingBottom: "5em", paddingTop: "5em" }}>
               <Header as="h3" style={{ fontSize: "2em" }}>
-                "I shouldn't have gone with their competitor."
+                "It helped me getting my dream job."
               </Header>
-              <p style={{ fontSize: "1.33em" }}>
-                <Image avatar src="/images/avatar/large/nan.jpg" />
-                <b>Nan</b> Chief Fun Officer Acme Toys
-              </p>
+              <p style={{ fontSize: "1.33em" }}>Ahmed saad</p>
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -156,7 +150,7 @@ const Landing = ({ mobile }) => {
             I'm Still Quite Interested
           </Button>
         </Container>
-      </Segment>
+      </Segment> */}
     </>
   );
 };

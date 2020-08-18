@@ -31,13 +31,13 @@ const UserProfile = ({ match }) => {
             <Fragment>
               <Segment style={{ marginTop: 50, marginBottom: 50 }} raised>
                 <Grid centered>
-                  <Grid.Row color="blue">
+                  <Grid.Row color="brown">
                     <Image src={user.avatar} circular size="medium" />
                   </Grid.Row>
-                  <Grid.Row color="blue">
+                  <Grid.Row color="brown">
                     <h1>{user.name}</h1>
                   </Grid.Row>
-                  <Grid.Row columns={8} color="blue">
+                  <Grid.Row columns={8} color="brown">
                     {website ? (
                       <Grid.Column textAlign="center">
                         <Icon name="world" />
@@ -47,12 +47,16 @@ const UserProfile = ({ match }) => {
                       ""
                     )}
                     {social
-                      ? Object.keys(social).map((item) => (
-                          <Grid.Column textAlign="center" key={item}>
-                            <Icon name={item} />
-                            <p>{social[item]}</p>
-                          </Grid.Column>
-                        ))
+                      ? Object.keys(social).map((item) =>
+                          social[item] ? (
+                            <Grid.Column textAlign="center" key={item}>
+                              <Icon name={item} />
+                              <p>{social[item]}</p>
+                            </Grid.Column>
+                          ) : (
+                            ""
+                          )
+                        )
                       : ""}
                   </Grid.Row>
                 </Grid>

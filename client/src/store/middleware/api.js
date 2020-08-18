@@ -17,7 +17,7 @@
 //     console.log(method + data + url + headers);
 //     try {
 //       const res = await axios.request({
-//         baseURL: "http://localhost:5000/api",
+//         baseURL: "/api",
 //         url,
 //         headers,
 //         method,
