@@ -14,7 +14,6 @@ const UserProfile = ({ match }) => {
       setProfile(res.data);
       setLoading(false);
     } catch (error) {
-      console.log(error.response);
       setLoading(false);
     }
   };

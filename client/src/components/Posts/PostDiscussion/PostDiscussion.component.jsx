@@ -45,21 +45,19 @@ const PostDiscussion = ({ match }) => {
 
   return (
     <Grid centered style={{ minHeight: "68vh" }}>
-      <Grid.Row>
+      <Grid.Row style={{ marginTop: 100 }}>
         <Grid.Column width={12}>
-          <Secion>
-            {post ? (
-              <PostComponent post={post} />
-            ) : (
-              <Loader
-                inline
-                active
-                content="Loading"
-                size="massive"
-                style={{ marginTop: 100, textAlign: "center" }}
-              />
-            )}
-          </Secion>
+          {post ? (
+            <PostComponent post={post} />
+          ) : (
+            <Loader
+              inline
+              active
+              content="Loading"
+              size="massive"
+              style={{ marginTop: 100, textAlign: "center" }}
+            />
+          )}
         </Grid.Column>
       </Grid.Row>
       <Grid.Row>
@@ -74,23 +72,29 @@ const PostDiscussion = ({ match }) => {
                     </Label>
                   ) : null}
                 </Form.Field>
+                <CommentTextArea
+                  value={text}
+                  error={errors}
+                  onChange={(e) => setText(e.target.value)}
+                  minRows={3}
+                  placeholder="Write your comment here !"
+                  cacheMeasurements
+                />
+                <Button
+                  loading={loading}
+                  disabled={loading}
+                  content="Add a comment"
+                  color="vk"
+                  onClick={createComment}
+                />
               </Form>
-              <CommentTextArea
-                value={text}
-                error={errors}
-                onChange={(e) => setText(e.target.value)}
-                minRows={3}
-                placeholder="Write your comment here !"
-              />
-              <Button
-                loading={loading}
-                disabled={loading}
-                content="Add a comment"
-                color="vk"
-                onClick={createComment}
-              />
+
               {post.comments.map((comment) => (
-                <PostComment key={comment._id} comment={comment} />
+                <PostComment
+                  key={comment._id}
+                  comment={comment}
+                  postId={postId}
+                />
               ))}
             </Secion>
           ) : (

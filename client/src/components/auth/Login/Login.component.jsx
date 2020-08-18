@@ -41,7 +41,6 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (state) {
-      console.log(state.redirectMessage);
       dispatch(setPopUp("info", state.redirectMessage));
     }
     return () => {

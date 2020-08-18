@@ -38,7 +38,6 @@ const FormInput = ({
       }
       name={valueName.toLowerCase()}
       onChange={(e) => {
-        console.log(formData);
         setFormData({ ...formData, [e.target.name]: e.target.value });
       }}
       {...otherProps}

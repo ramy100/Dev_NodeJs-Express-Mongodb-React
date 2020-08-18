@@ -160,7 +160,6 @@ function* deleteEducationAsync({ payload: { token, eduId } }) {
   } catch (error) {
     yield put(REQUEST_FAILED());
     yield put(setPopUp("error", "Couldn't Delete Education!"));
-    // yield console.log(error.response);
   }
 }
 function* deleteExperienceAsync({ payload: { token, expId } }) {

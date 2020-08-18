@@ -41,7 +41,6 @@ const CreateOrUpdataProfile = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
-    console.log(formData);
     dispatch(createOrUpdateProfileCallBegin({ token, formData }));
   };
 

@@ -13,6 +13,8 @@ import {
   requestLikePostById,
   requestUnLikePostById,
   requestPutCommentToPost,
+  requestDeleteCommentFromPost,
+  requestDeletePostById,
 } from "../api/PostsApi";
 import { STATES } from "mongoose";
 const initialState = {
@@ -55,21 +57,15 @@ const postsSlice = createSlice({
     OPEN_CREATE_MODAL: (state, action) => {
       state.openCreatePostModal = true;
     },
-    LIKE_POST_SUCCESS: (state, action) => {
+    UPDATE_POST_SUCCESS: (state, action) => {
       state.posts = state.posts.map((post) =>
         post._id === action.payload._id ? action.payload : post
       );
       state.loading = false;
     },
-    UNLIKE_POST_SUCCESS: (state, action) => {
-      state.posts = state.posts.map((post) =>
-        post._id === action.payload._id ? action.payload : post
-      );
-      state.loading = false;
-    },
-    ADD_COMMENT_SUCCESS: (state, action) => {
-      state.posts = state.posts.map((post) =>
-        post._id === action.payload._id ? action.payload : post
+    DELETE_POST_SUCCESS: (state, action) => {
+      state.posts = state.posts.filter(
+        (post) => post._id !== action.payload.postId
       );
       state.loading = false;
     },
@@ -86,9 +82,8 @@ const {
   NO_MORE_POSTS,
   OPEN_CREATE_MODAL,
   CLOSE_CREATE_MODAL,
-  LIKE_POST_SUCCESS,
-  UNLIKE_POST_SUCCESS,
-  ADD_COMMENT_SUCCESS,
+  DELETE_POST_SUCCESS,
+  UPDATE_POST_SUCCESS,
 } = postsSlice.actions;
 
 // posts sagas
@@ -125,7 +120,7 @@ function* likePostAsync({ payload: { token, postId } }) {
   try {
     yield put(REQUEST_LAODING());
     const res = yield requestLikePostById(token, postId);
-    yield put(LIKE_POST_SUCCESS(res.data));
+    yield put(UPDATE_POST_SUCCESS(res.data));
   } catch (error) {
     yield put(REQUEST_FAILED());
 
@@ -137,7 +132,7 @@ function* unLikePostAsync({ payload: { token, postId } }) {
   try {
     yield put(REQUEST_LAODING());
     const res = yield requestUnLikePostById(token, postId);
-    yield put(UNLIKE_POST_SUCCESS(res.data));
+    yield put(UPDATE_POST_SUCCESS(res.data));
   } catch (error) {
     yield put(REQUEST_FAILED());
 
@@ -149,7 +144,7 @@ function* addCommentAsync({ payload: { token, postId, text } }) {
   try {
     yield put(REQUEST_LAODING());
     const res = yield requestPutCommentToPost(token, postId, { text });
-    yield put(ADD_COMMENT_SUCCESS(res.data));
+    yield put(UPDATE_POST_SUCCESS(res.data));
     yield put(clearPrompts());
     yield put(clearForm());
   } catch (error) {
@@ -163,12 +158,38 @@ function* addCommentAsync({ payload: { token, postId, text } }) {
   }
 }
 
+function* deleteCommentAsync({ payload: { token, postId, commentId } }) {
+  try {
+    yield put(REQUEST_LAODING());
+    const res = yield requestDeleteCommentFromPost(token, postId, commentId);
+    yield put(UPDATE_POST_SUCCESS(res.data));
+    yield put(setPopUp("success", "Deleted Comment"));
+  } catch (error) {
+    yield put(setPopUp("info", "Failed deleting comment"));
+    yield put(REQUEST_FAILED());
+  }
+}
+
+function* deletePostAsync({ payload: { token, postId } }) {
+  try {
+    yield put(REQUEST_LAODING());
+    const res = yield requestDeletePostById(token, postId);
+    yield put(DELETE_POST_SUCCESS({ postId }));
+    yield put(setPopUp("success", "Deleted Post"));
+  } catch (error) {
+    yield put(setPopUp("info", "Failed deleting post"));
+    yield put(REQUEST_FAILED());
+  }
+}
+
 export function* watchPostsAsync() {
   yield all([takeLeading(createPostCallBegin.type, createPostAsync)]);
+  yield all([takeLeading(deletePostCallBegin.type, deletePostAsync)]);
   yield all([takeLeading(getPostsCallBegin.type, getPostsAsync)]);
   yield all([takeLeading(likePostCallBegin.type, likePostAsync)]);
   yield all([takeLeading(unLikePostCallBegin.type, unLikePostAsync)]);
   yield all([takeLeading(createCommentCallBegin.type, addCommentAsync)]);
+  yield all([takeLeading(deleteCommentCallBegin.type, deleteCommentAsync)]);
 }
 
 // posts actions
@@ -179,6 +200,10 @@ export const unLikePostCallBegin = createAction("posts/UNLIKE_POST_CALL_BEGIN");
 export const createCommentCallBegin = createAction(
   "posts/CREATE_COMMENT_CALL_BEGIN"
 );
+export const deleteCommentCallBegin = createAction(
+  "posts/DELETE_COMMENT_CALL_BEGIN"
+);
+export const deletePostCallBegin = createAction("posts/DELETE_POST_CALL_BEGIN");
 
 //export action callers
 export const closeModal = () => (dispatch) => dispatch(CLOSE_CREATE_MODAL());

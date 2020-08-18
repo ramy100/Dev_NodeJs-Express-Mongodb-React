@@ -94,7 +94,8 @@ function* loadUserAsync(action) {
     yield put(LOGIN_USER({ token, user }));
     yield put(setPopUp("success", `Welcome ${user.name} !`));
   } catch (err) {
-    yield console.log(err.response);
+    //nothing to display here
+    // yield console.log(err.response);
   }
 }
 

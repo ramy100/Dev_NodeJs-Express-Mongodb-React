@@ -12,6 +12,7 @@ import {
   likePostCallBegin,
   unLikePostCallBegin,
   postsLoadingSelector,
+  deletePostCallBegin,
 } from "../../../store/slices/posts";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -19,11 +20,13 @@ import {
   authTokenSelector,
   authuserSelector,
 } from "../../../store/slices/auth";
+import Swal from "sweetalert2";
 
 const PostComponent = ({ post }) => {
   const dispatch = useDispatch();
   const token = useSelector(authTokenSelector);
   const user = useSelector(authuserSelector);
+  const loading = useSelector(postsLoadingSelector);
   const isLiked = post.likes.some((like) => like.user === user._id)
     ? true
     : false;
@@ -32,7 +35,21 @@ const PostComponent = ({ post }) => {
       ? dispatch(unLikePostCallBegin({ token, postId: post._id }))
       : dispatch(likePostCallBegin({ token, postId: post._id }));
   };
-  const loading = useSelector(postsLoadingSelector);
+  const deletePost = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.value) {
+        dispatch(deletePostCallBegin({ token, postId: post._id }));
+      }
+    });
+  };
 
   return (
     <Segment raised style={{ borderRadius: 10, width: "100%" }}>
@@ -42,18 +59,31 @@ const PostComponent = ({ post }) => {
             <Image size="small" src={post.avatar} />
             <Header textAlign="center" content={post.name} />
           </Grid.Column>
-          <Grid.Column width={14} verticalAlign="middle">
-            <p
+          <Grid.Column width={14}>
+            {post.user == user._id ? (
+              <Button
+                floated="right"
+                loading={loading}
+                disabled={loading}
+                circular
+                icon={<Icon name="x" color="red" />}
+                onClick={deletePost}
+              />
+            ) : (
+              ""
+            )}
+            <pre
               style={{
                 wordWrap: "break-word",
+                whiteSpace: "pre-wrap",
                 fontSize: 15,
                 fontWeight: "bold",
                 color: "#0f4c75",
-                textAlign: "center",
+                textAlign: "left",
               }}
             >
               {post.text}
-            </p>
+            </pre>
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
