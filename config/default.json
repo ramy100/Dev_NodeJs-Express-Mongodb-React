@@ -1,6 +1,0 @@
-{
-  "mongoURI": "mongodb+srv://ramy:123@ramy-project-noqmg.mongodb.net/test?retryWrites=true&w=majority",
-  "jwtSecret": "mysecretToken",
-  "githubclientid": "Iv1.3db4084b53bcb1fd",
-  "githubsecret": "7916223e575a4397cacd9d2fe9b6d5059c0155eb"
-}

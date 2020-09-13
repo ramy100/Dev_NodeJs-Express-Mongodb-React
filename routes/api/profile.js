@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const Profile = require("../../models/Profile");
-const config = require("config");
+require("dotenv").config();
 const request = require("request");
 const User = require("../../models/User");
 const { check, validationResult, body } = require("express-validator");
@@ -328,11 +328,7 @@ router.delete("/education/:edu_id", auth, async (req, res) => {
 router.get("/github/:username", (req, res) => {
   try {
     const options = {
-      uri: `https://api.gitbub.com/users/${
-        req.params.userma
-      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
-        "githubclientid"
-      )}&client_secret=${config.get("githubsecret")}`,
+      uri: `https://api.gitbub.com/users/${req.params.userma}/repos?per_page=5&sort=created:asc&client_id=${process.env.GIT_CLIENT_ID}&client_secret=${process.env.GIT_HUB_SECRET}`,
       method: "GET",
       headers: { "user-agent": "node.js" },
     };

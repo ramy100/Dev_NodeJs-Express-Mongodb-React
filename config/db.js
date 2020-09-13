@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-// an installed dependancy that gets value from default.json
-const config = require('config');
-const db = config.get('mongoURI');
+const mongoose = require("mongoose");
+require("dotenv").config();
+const db = process.env.DB_CONNECTION;
 
 const connectDB = async () => {
   try {
@@ -10,9 +9,9 @@ const connectDB = async () => {
       useUnifiedTopology: true,
       useFindAndModify: false,
     });
-    console.log('Connected to Db');
+    console.log("Connected to Db");
   } catch (err) {
-    console.log('Failed Connecting to Db');
+    console.log("Failed Connecting to Db");
     console.log(err.message);
     process.exit(1);
   }
